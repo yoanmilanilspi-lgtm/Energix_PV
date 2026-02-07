@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommandation Panneaux Photovoltaïques</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .header-texts { flex-grow: 1; text-align: center; }
+        .header-texts h1 { color: #FFF; font-size: 1.6rem; font-weight: 600; margin: 10px 0 5px 0; }
+        .header-texts h2 { color: #F0C300; font-size: 1.1rem; font-weight: 400; margin: 0; }
+        .form-group.grayed { opacity: 0.4; pointer-events: none; transition: 0.3s; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <img src="{{ url_for('static', filename='img/Austral Solar.jpg') }}" alt="Logo" id="logo">
+            <div class="header-texts">
+                <h1>Recommandation de centrale solaire</h1>
+                <h2>Austral Groupe Energie</h2>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <form method="POST">
+            <div class="form-group">
+                <p class="form-info">
+                    Vous pouvez renseigner <strong>soit</strong> le nombre d'habitants, <strong>soit</strong> la consommation mensuelle moyenne.<br>
+					La consommation mensuelle en (kWh) est <strong>recommandée</strong> pour une estimation plus précise.
+                </p>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="consommation_mensuelle">Consommation (kWh/mois)</label>
+                    <input type="number" id="consommation_mensuelle" name="consommation_mensuelle" list="conso-list" placeholder="Ex: 450">
+                    <datalist id="conso-list">
+                        {% for c in data.consommation %}<option value="{{ c }}">{% endfor %}
+                    </datalist>
+                </div>
+                <div class="form-group half">
+                    <label for="nb_occupants">Nombre d'habitants</label>
+                    <input type="number" id="nb_occupants" name="nb_occupants" list="occupants-list" placeholder="Ex: 4">
+                    <datalist id="occupants-list">
+                        {% for n in data.occupants %}<option value="{{ n }}">{% endfor %}
+                    </datalist>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="surface">Surface disponible (m²)</label>
+                <input type="number" id="surface" name="surface" required list="surface-list" placeholder="Ex: 20">
+                <datalist id="surface-list">
+                    {% for s in data.surface %}<option value="{{ s }}">{% endfor %}
+                </datalist>
+            </div>
+
+            <div class="form-group">
+                <label for="budget">Budget disponible (€)</label>
+                <input type="number" id="budget" name="budget" required list="budget-list" placeholder="Ex: 12000">
+                <datalist id="budget-list">
+                    {% for b in data.budget %}<option value="{{ b }}">{% endfor %}
+                </datalist>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="categorie">Choisissez la catégorie de lieu (optionnel)</label>
+                    <select id="categorie" name="categorie">
+                        <option value="" selected>Tous les lieux</option>
+                        {% for cat in data.lieux.keys() %}
+                        <option value="{{ cat }}">
+                            {% if cat == 'ville' %}
+                                Ville & Lieu-dit
+                            {% else %}
+                                {{ cat|capitalize|replace('_', ' ') }}
+                            {% endif %}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group half">
+                    <label for="zone_ville_cp">Précisez le lieu</label>
+                    <input type="text" id="zone_ville_cp" name="zone_ville_cp" list="zone-list" placeholder="Sélectionnez...">
+                    <datalist id="zone-list"></datalist>
+                </div>
+            </div>
+
+            <button type="submit" style="display: block; margin: 5px auto;">Obtenir la recommandation</button>
+        </form>
+    </div>
+
+    <script>
+        const DATA_LIEUX = {{ data.lieux | tojson }};
+        const ALL_LIEUX = [].concat(...Object.values(DATA_LIEUX));
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const conso = document.getElementById('consommation_mensuelle');
+            const nb = document.getElementById('nb_occupants');
+            const catSelect = document.getElementById('categorie');
+            const zoneInput = document.getElementById('zone_ville_cp');
+            const zoneList = document.getElementById('zone-list');
+
+            function toggleInputs() {
+                if (conso.value) {
+                    nb.disabled = true; nb.closest('.form-group').classList.add('grayed');
+                } else if (nb.value) {
+                    conso.disabled = true; conso.closest('.form-group').classList.add('grayed');
+                } else {
+                    nb.disabled = false; conso.disabled = false;
+                    nb.closest('.form-group').classList.remove('grayed');
+                    conso.closest('.form-group').classList.remove('grayed');
+                }
+            }
+            conso.addEventListener('input', toggleInputs);
+            nb.addEventListener('input', toggleInputs);
+
+            catSelect.addEventListener('change', function() {
+                const cat = this.value;
+                zoneList.innerHTML = '';
+                const options = cat ? DATA_LIEUX[cat] : ALL_LIEUX;
+                
+                // Tri alphabétique pour plus de confort
+                const sortedOptions = [...options].sort();
+
+                sortedOptions.forEach(opt => {
+                    const el = document.createElement('option');
+                    el.value = opt;
+                    zoneList.appendChild(el);
+                });
+            });
+
+            catSelect.dispatchEvent(new Event('change'));
+        });
+    </script>
+</body>
+</html>

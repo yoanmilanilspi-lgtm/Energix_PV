@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consommation vs Production</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .header-texts h1 {
+            color: #FFF;
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 30px 10px 8px 290px;
+            letter-spacing: 0.9px;
+            line-height: 1.2;
+            text-align: center;
+        }
+        .header-texts h2 {
+            color: #F0C300;
+            font-size: 1.1rem;
+            font-weight: 400;
+            margin: 2px 0 8px 290px;
+            letter-spacing: 0.9px;
+            text-align: center;
+        }
+        .result-values {
+            text-align: center;
+            font-size: 1rem;
+            margin-top: 20px;
+            padding: 12px;
+            background: #FFF9E3;
+            border-left: 5px solid #F0C300;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="report-remote-container">
+    <div class="report-remote-tab">
+        <div class="remote-trigger">
+            <span class="arrow-icon">❯</span>
+            <div class="trigger-label">MENU</div>
+        </div>
+        
+        <div class="remote-content">
+            <div class="remote-header">📋 SOMMAIRE COMPARATIF</div>
+            
+            <nav class="remote-nav">
+                <a href="#perimetre">📍 Périmètre & Lieu</a>
+                <a href="#comparatif-flux">📊 Graphique des Flux</a>
+                <a href="#bilan-chiffre">🔢 Bilan Chiffré</a>
+                
+                <div class="remote-divider">Navigation Expert</div>
+                
+                <a href="/" class="action-link" style="border-top: 1px dashed #FDE68A; margin-top: 10px;">🏠 Accueil</a>
+
+                <a href="{{ url_for('show_recommendation', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}" class="action-link">
+                    📋 Recommandation
+                </a>
+
+                <a href="{{ url_for('show_graph', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}" class="action-link">
+                    📈 Résultats Estimés
+                </a>
+
+				<a href="{{ url_for('dashboard', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite, inclinaison=inclinaison, orientation=orientation, nb_panneaux=nb_panneaux) }}" 
+                   class="action-link" style="color: #000 !important; background: #F0C300 !important; font-weight: bold;">
+                    📊 Tableau de Bord
+                </a>
+            </nav>
+        </div>
+    </div>
+</div>
+    <header>
+        <div class="header-container">
+            <img src="{{ url_for('static', filename='img/Austral Solar.jpg') }}" alt="Logo Austral Groupe Energie" id="logo">
+            <div class="header-texts">
+				<div style="justify-content: center; align-items: center;">
+					<h1>Estimation de la consommation & de la production</h1>
+					<h2>Comparatif personnalisé</h2>
+				</div>
+            </div>
+        </div>
+    </header>
+	<div id="perimetre" class="result" style="font-size:0.9em; line-height:1.4; text-align:justify; margin-bottom:20px; padding: 10px 30px; width: 90%;">
+		<h2 style="margin-bottom:10px; font-weight: 700; font-size: 1.1em; letter-spacing: 0.5px; color: #000;">
+			📍 Périmètre de l'étude
+		</h2>
+
+		<div style="margin-bottom: 20px; position: relative; z-index: 999; font-family: 'Segoe UI', Arial, sans-serif;">
+    
+			<div id="trigger-zone" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #FFFFFF; border: 1px solid #FDE68A; border-radius: 12px 12px 0 0; user-select: none; box-shadow: 0 2px 8px rgba(251, 191, 36, 0.1);">
+				<strong style="font-size: 14px; color: #92400E; letter-spacing: 0.3px;">
+					📍 Lieu(x) couvert(s) par cette étude :
+				</strong>
+				<span id="state-arrow" style="transition: transform 0.3s; font-size: 12px; color: #F0C300; font-weight: bold;">▼</span>
+			</div>
+
+			<div id="collapsible-band" style="max-height: 50px; opacity: 1; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: #1a1a1a; color: #F0C300; border-radius: 0 0 8px 8px; border-left: 5px solid #F0C300; margin-top: 0px;">
+				<div style="padding: 12px; white-space: nowrap; font-weight: bold; letter-spacing: 0.5px;">
+					<marquee behavior="scroll" direction="left" scrollamount="5">
+						{{ lieu }} • {{ lieu }} • {{ lieu }} — EXPERTISE SOLAIRE RÉUNIONNAISE — AUSTRAL GROUPE ENERGIE
+					</marquee>
+				</div>
+			</div>
+		</div>
+
+		<script>
+		(function() {
+			// On utilise un sélecteur direct pour éviter les problèmes d'ID non trouvés
+			const trigger = document.getElementById('trigger-zone');
+			const band = document.getElementById('collapsible-band');
+			const arrow = document.getElementById('state-arrow');
+
+			if (trigger && band) {
+				// Force l'affichage de la main au survol
+				trigger.style.cursor = "pointer";
+
+				trigger.onclick = function(e) {
+					e.preventDefault();
+					
+					// On vérifie l'état actuel
+					const isClosed = band.style.maxHeight === "0px";
+
+					if (isClosed) {
+						// ACTION : OUVRIR
+						band.style.maxHeight = "50px";
+						band.style.opacity = "1";
+						band.style.marginTop = "5px";
+						if(arrow) arrow.style.transform = "rotate(0deg)";
+						console.log("Ouverture du bandeau");
+					} else {
+						// ACTION : FERMER
+						band.style.maxHeight = "0px";
+						band.style.opacity = "0";
+						band.style.marginTop = "0px";
+						if(arrow) arrow.style.transform = "rotate(-90deg)";
+						console.log("Fermeture du bandeau");
+					}
+				};
+			} else {
+				console.error("Erreur : Éléments du bandeau introuvables dans le DOM");
+			}
+		})();
+		</script>
+
+		<div style="margin-bottom: 20px; font-family: 'Segoe UI', Arial, sans-serif;">
+			<details style="background: #FFFFFF; border-radius: 10px; cursor: pointer; border: 1px solid #FDE68A; box-shadow: 0 2px 8px rgba(251, 191, 36, 0.1); overflow: hidden; transition: 0.3s;">
+				<summary style="padding: 12px 15px; font-weight: bold; color: #92400E; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+					<span>🔍 Voir la liste complète des secteurs inclus</span>
+					<span style="color: #F0C300; font-size: 12px;">▼</span>
+				</summary>
+				
+				<div style="padding: 15px; border-top: 1px solid #FEF3C7; background: #FFFBEB; font-size: 0.9em; color: #4B5563; line-height: 1.6;">
+					<div style="column-count: 2; column-gap: 20px;">
+						<span style="color: #D97706; font-weight: bold;">•</span> {{ lieu.replace(' • ', ' <br><span style="color: #D97706; font-weight: bold;">•</span> ') | safe }}
+					</div>
+				</div>
+			</details>
+		</div>
+
+		<div style="background: #FFFFFF; padding: 15px; border-radius: 12px; border: 1px solid #FDE68A; box-shadow: 0 2px 10px rgba(251, 191, 36, 0.08); font-family: 'Segoe UI', Arial, sans-serif;">
+			
+			<div style="margin-bottom: 8px; display: flex; align-items: center; color: #4A3728;"> 
+				<span style="font-weight: bold;">☀️ Zone d'ensoleillement :</span> 
+				<span style="margin-left: 5px; color: #4A3728; font-weight: 600;">{{ zone }}</span> 
+				<img src="{{ url_for('static', filename='img/la_reunion.png') }}" 
+					 width="28" 
+					 style="vertical-align: middle; margin-left: 10px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));" 
+					 alt="Carte Réunion" />
+			</div>
+
+			<div style="color: #4A3728; border-top: 1px solid #FFF7ED; pt: 8px; margin-top: 8px;">
+				<span style="font-weight: bold;">🏢 Intercommunalité référente :</span> 
+				<span style="margin-left: 5px; color: #4A3728; font-weight: 600;">{{ intercommunalite }}</span>
+			</div>
+
+		</div>
+	</div>
+	<form method="POST">
+    <main>
+                   
+			<div id="comparatif-flux" class="plot-section" style="margin: 20px auto; width: 95%; max-width: 1000px;">
+				<details style="background: #FFF; border-radius: 12px; border: 1px solid #ddd; box-shadow: 0 4px 12px rgba(0,0,0,0.05);" open>
+					<summary style="padding: 15px; font-weight: bold; cursor: pointer; color: #333; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center;">
+						<span>📊 Graphique des flux : Consommation vs Production</span>
+						<span style="color: #F0C300; font-size: 1.2em;">▼</span>
+					</summary>
+					<div style="padding: 20px; border-top: 1px solid #eee; overflow-x: auto;">
+						{{ consommation_production_plot|safe }}
+					</div>
+				</details>
+			</div>
+		
+			<div class="result-wrapper" style="margin: 20px auto; width: 100%; max-width: 1000px;">
+				<details open style="background: #FFFFFF; border-radius: 18px; border: 1px solid #FDE68A; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden;">
+					
+					<summary style="padding: 20px 25px; background: #FFFBEB; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none; outline: none;">
+						<span style="font-weight: 700; color: #92400E; font-size: 1rem; letter-spacing: 0.5px;">
+							📊 BILAN ÉNERGÉTIQUE ET RECOMMANDATION
+						</span>
+						<span class="arrow-icon" style="color: #F0C300; font-size: 1rem; transition: transform 0.3s;">▼</span>
+					</summary>
+
+					<div id="bilan-chiffre" class="result-values" style="padding: 20px; background: #FFFFFF;">
+						
+						<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 25px; border-bottom: 1px solid #FEE2E2; padding-bottom: 20px;">
+							
+							<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; font-family: 'Segoe UI', sans-serif; margin-bottom: 25px; border-bottom: 1px solid #FEE2E2; padding-bottom: 20px;">
+    
+								<div style="background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+									<div style="font-size: 0.7rem; font-weight: 700; color: #9BA3AF; text-transform: uppercase; margin-bottom: 10px; text-align: center; letter-spacing: 1px;">Échelle Annuelle</div>
+									<div style="display: flex; flex-direction: column; gap: 8px;">
+										<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #4B5563;">
+											<span>📉 Consommation</span>
+											<span><b>{{ "%.0f"|format(consommation_estimee * 12 if consommation_estimee < 1000 else consommation_estimee) }}</b> <small>kWh</small></span>
+										</div>
+										<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #F5A900;">
+											<span>☀️ Production</span>
+											<span><b>{{ "%.0f"|format(production_estimee) }}</b> <small>kWh</small></span>
+										</div>
+									</div>
+								</div>
+
+								<div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 12px; padding: 12px; box-shadow: 0 2px 8px rgba(240, 195, 0, 0.1);">
+									<div style="font-size: 0.7rem; font-weight: 700; color: #B45309; text-transform: uppercase; margin-bottom: 10px; text-align: center; letter-spacing: 1px;">Échelle Mensuelle</div>
+									<div style="display: flex; flex-direction: column; gap: 8px;">
+										<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: #4B5563;">
+											<span></span>
+											<span><b>{{ "%.0f"|format(consommation_estimee if consommation_estimee < 1000 else consommation_estimee / 12) }}</b> <small>kWh</small></span>
+										</div>
+										<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: #D97706;">
+											<span></span>
+											<span><b>{{ "%.0f"|format(production_mensuelle) }}</b> <small>kWh</small></span>
+										</div>
+									</div>
+								</div>
+
+								<div style="background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+									<div style="font-size: 0.7rem; font-weight: 700; color: #9BA3AF; text-transform: uppercase; margin-bottom: 10px; text-align: center; letter-spacing: 1px;">Échelle Journalière</div>
+									<div style="display: flex; flex-direction: column; gap: 8px;">
+										<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #4B5563;">
+											<span></span>
+											<span><b>{{ "%.1f"|format((consommation_estimee / 30) if consommation_estimee < 1000 else (consommation_estimee / 365)) }}</b> <small>kWh</small></span>
+										</div>
+										<div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: #F5A900;">
+											<span></span>
+											<span><b>{{ "%.1f"|format(production_journaliere) }}</b> <small>kWh</small></span>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+
+						<div id="recommandation-principale" class="recommendation-text" style="width: 100%;">
+							{{ recommendation|safe }}
+						</div>
+
+					</div>
+				</details>
+			</div>
+
+
+        <section class="info-section" style="text-align:center; margin-top:30px;">
+				<div style="color:#000; border-left:5px;font-size:0.9em; font-family:Arial, sans-serif; line-height:1.4; text-align:center;margin-bottom:7px">
+                Visualisez la différence entre votre consommation électrique estimée et la production attendue de votre future installation solaire.
+				</div>
+           
+			{% if production_estimee < consommation_estimee %}
+                <div style="color:#A00; font-weight:bold; margin-bottom:10px;">
+                    ⚠ La production estimée ne couvre pas la totalité de votre consommation annuelle.<br>
+                    <span style="font-weight:normal;">Pensez à optimiser vos usages ou à envisager une installation plus grande si possible.</span>
+                </div>
+            {% else %}
+                <div style="color:#0A0; font-weight:bold; margin-bottom:10px;">
+                    ✅ Votre installation solaire couvre votre consommation annuelle !
+                </div>
+            {% endif %}
+        </section>	
+
+	</form>
+	</main>
+	
+		<div class="button-group" style="text-align:center; margin:20px 0;">
+			<a class="back-button" href="{{ url_for('show_graph') }}">
+				Résultats estimés
+			</a>
+			
+			<a class="back-button" href="{{ url_for('show_recommendation') }}">
+				Retour à la recommandation
+			</a>
+			
+			<a class="dashboard-button" href="{{ url_for('dashboard') }}">
+				Tableau de bord & Caractéristiques PV
+			</a>
+
+			<a class="back-button" href="/">Retour à l'accueil</a>
+		</div>
+    
+</body>
+</html>											
