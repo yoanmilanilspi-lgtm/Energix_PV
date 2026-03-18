@@ -5,25 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consommation vs Production</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon/favicon.ico') }}">
+
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/favicon/apple-touch-icon.png') }}">
+
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon/favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon/favicon-16x16.png') }}">
+
+	<link rel="manifest" href="{{ url_for('static', filename='img/favicon/site.webmanifest') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
-        .header-texts h1 {
-            color: #FFF;
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin: 30px 10px 8px 290px;
-            letter-spacing: 0.9px;
-            line-height: 1.2;
-            text-align: center;
-        }
-        .header-texts h2 {
-            color: #F0C300;
-            font-size: 1.1rem;
-            font-weight: 400;
-            margin: 2px 0 8px 290px;
-            letter-spacing: 0.9px;
-            text-align: center;
-        }
+        .header-texts { flex-grow: 1; text-align: center; }
+        .header-texts h1 { color: #FFF; font-size: 1.6rem; font-weight: 600; margin: 10px 0 5px 0; }
+        .header-texts h2 { color: #a3daff;  font-size: 1.1rem; font-weight: 400; margin: 0; }
+        .form-group.grayed { opacity: 0.4; pointer-events: none; transition: 0.3s; }
         .result-values {
             text-align: center;
             font-size: 1rem;
@@ -47,33 +42,33 @@
             <div class="remote-header">📋 SOMMAIRE COMPARATIF</div>
             
             <nav class="remote-nav">
-                <a href="#perimetre">📍 Périmètre & Lieu</a>
-                <a href="#comparatif-flux">📊 Graphique des Flux</a>
-                <a href="#bilan-chiffre">🔢 Bilan Chiffré</a>
-                
-                <div class="remote-divider">Navigation Expert</div>
-                
-                <a href="/" class="action-link" style="border-top: 1px dashed #FDE68A; margin-top: 10px;">🏠 Accueil</a>
+				<a href="#perimetre">📍 Périmètre & Lieu</a>
+				<a href="#comparatif-flux">📊 Graphique des Flux</a>
+				<a href="#bilan-chiffre">🔢 Bilan Chiffré</a>
+				
+				<div class="remote-divider">Navigation Expert</div>
+				
+				<a href="/" class="action-link" style="border-top: 1px dashed #eee; margin-top: 10px;">🏠 Accueil</a>
 
-                <a href="{{ url_for('show_recommendation', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}" class="action-link">
-                    📋 Recommandation
-                </a>
+				<a href="{{ url_for('show_recommendation', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}" class="action-link">
+					📋 Recommandation
+				</a>
 
-                <a href="{{ url_for('show_graph', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}" class="action-link">
-                    📈 Résultats Estimés
-                </a>
+				<a href="{{ url_for('show_graph', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}" class="action-link">
+					📈 Résultats Estimés
+				</a>
 
 				<a href="{{ url_for('dashboard', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite, inclinaison=inclinaison, orientation=orientation, nb_panneaux=nb_panneaux) }}" 
-                   class="action-link" style="color: #000 !important; background: #F0C300 !important; font-weight: bold;">
-                    📊 Tableau de Bord
-                </a>
-            </nav>
+				   class="action-link dashboard-btn-nav">
+					📊 Tableau de Bord
+				</a>
+			</nav>
         </div>
     </div>
 </div>
     <header>
         <div class="header-container">
-            <img src="{{ url_for('static', filename='img/Austral Solar.jpg') }}" alt="Logo Austral Groupe Energie" id="logo">
+            <img src="{{ url_for('static', filename='img/EnergiX.svg') }}" alt="Logo"  id="logo">
             <div class="header-texts">
 				<div style="justify-content: center; align-items: center;">
 					<h1>Estimation de la consommation & de la production</h1>
@@ -89,17 +84,19 @@
 
 		<div style="margin-bottom: 20px; position: relative; z-index: 999; font-family: 'Segoe UI', Arial, sans-serif;">
     
-			<div id="trigger-zone" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #FFFFFF; border: 1px solid #FDE68A; border-radius: 12px 12px 0 0; user-select: none; box-shadow: 0 2px 8px rgba(251, 191, 36, 0.1);">
-				<strong style="font-size: 14px; color: #92400E; letter-spacing: 0.3px;">
+			<div id="trigger-zone" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #FFFFFF; border: 1px solid #ff4d00; border-radius: 12px 12px 0 0; user-select: none; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1);">
+				<strong style="font-size: 14px; color: #7f1d1d; letter-spacing: 0.3px;">
 					📍 Lieu(x) couvert(s) par cette étude :
 				</strong>
-				<span id="state-arrow" style="transition: transform 0.3s; font-size: 12px; color: #F0C300; font-weight: bold;">▼</span>
+				<span id="state-arrow" style="transition: transform 0.3s; font-size: 12px; color: #ff0000; font-weight: bold;">▼</span>
 			</div>
 
-			<div id="collapsible-band" style="max-height: 50px; opacity: 1; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: #1a1a1a; color: #F0C300; border-radius: 0 0 8px 8px; border-left: 5px solid #F0C300; margin-top: 0px;">
-				<div style="padding: 12px; white-space: nowrap; font-weight: bold; letter-spacing: 0.5px;">
-					<marquee behavior="scroll" direction="left" scrollamount="5">
-						{{ lieu }} • {{ lieu }} • {{ lieu }} — EXPERTISE SOLAIRE RÉUNIONNAISE — AUSTRAL GROUPE ENERGIE
+			<div id="collapsible-band" style="max-height: 50px; opacity: 1; overflow: hidden; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); background: linear-gradient(90deg, #0047AB 0%, #450a0a 100%); color: #ffffff; border-radius: 0 0 12px 12px; border-left: 5px solid #ff4d00; margin-top: 0px;">
+				<div style="padding: 12px; white-space: nowrap; font-weight: bold; letter-spacing: 0.8px; font-family: 'Montserrat', sans-serif;">
+					<marquee behavior="scroll" direction="left" scrollamount="6">
+						<span style="color: #ff4d00;"></span> {{ lieu }} • {{ lieu }} • {{ lieu }} 
+						<span style="opacity: 0.7;"> — EXPERTISE SOLAIRE RÉUNIONNAISE — </span> 
+						<span style="text-transform: uppercase;">EnergiX PV Réunion</span>
 					</marquee>
 				</div>
 			</div>
@@ -283,20 +280,35 @@
 	</main>
 	
 		<div class="button-group" style="text-align:center; margin:20px 0;">
+			<a class="back-button" href="/">Accueil</a>
+			
+			<a class="back-button" href="{{ url_for('show_recommendation') }}">
+				Recommandation
+			</a>
+			
 			<a class="back-button" href="{{ url_for('show_graph') }}">
 				Résultats estimés
 			</a>
-			
-			<a class="back-button" href="{{ url_for('show_recommendation') }}">
-				Retour à la recommandation
-			</a>
-			
+		
 			<a class="dashboard-button" href="{{ url_for('dashboard') }}">
-				Tableau de bord & Caractéristiques PV
+				Tableau de bord
 			</a>
-
-			<a class="back-button" href="/">Retour à l'accueil</a>
 		</div>
-    
+		
+    <footer style="margin-top: 10px; padding: 10px; text-align: center; border-top: 1px solid #eee;">
+        
+		<div style="text-align: center; padding: 10px; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #000000;">
+			<p style="margin: 0;">
+				© 2026 <span style="color: #002395; font-weight: 800;">Energi</span><span style="color: #ff4d00; font-weight: 800;">X_97441</span>. 
+				Tous droits réservés.
+			</p>
+			
+			<div style="width: 120px; height: 2px; background: #F0C300; margin: 12px auto; border-radius: 2px; box-shadow: 0 1px 3px rgba(255, 77, 0, 0.3);"></div>
+			
+			<p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; font-weight: 600;">
+				L'expertise solaire locale
+			</p>
+		</div>
+    </footer>
 </body>
 </html>											

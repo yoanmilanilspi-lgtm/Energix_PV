@@ -5,28 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Caractéristiques PV - Système Photovoltaïque</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon/favicon.ico') }}">
+
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/favicon/apple-touch-icon.png') }}">
+
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon/favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon/favicon-16x16.png') }}">
+
+	<link rel="manifest" href="{{ url_for('static', filename='img/favicon/site.webmanifest') }}">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
-        .header-texts h1, header h1 {
-            color: #FFF;
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin: 30px auto 8px 330px;
-            letter-spacing: 0.9px;
-            line-height: 1.2;
-            text-align: center;
-            max-width: 900px;
-        }
-        .header-texts h2, header h2 {
-            color: #F0C300;
-            font-size: 1.1rem;
-            font-weight: 400;
-            margin: 2px auto 18px 330px;
-            letter-spacing: 0.9px;
-            text-align: center;
-            max-width: 900px;
-        }
-        form {
+        .header-texts { flex-grow: 1; text-align: center; }
+        .header-texts h1 { color: #FFF; font-size: 1.6rem; font-weight: 600; margin: 10px 0 5px 0; }
+        .header-texts h2 { color: #a3daff;  font-size: 1.1rem; font-weight: 400; margin: 0; }
+        .form-group.grayed { opacity: 0.4; pointer-events: none; transition: 0.3s; }m {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
@@ -134,8 +126,8 @@
 </div>
 	<header>
         <div class="header-container">
-            <img src="{{ url_for('static', filename='img/Austral Solar.jpg') }}" alt="Logo Austral Groupe Energie" id="logo">
-            <div class="header-texts" style="text-align: left;">
+            <img src="{{ url_for('static', filename='img/EnergiX.svg') }}" alt="Logo" id="logo">
+            <div class="header-texts" style="text-align: center;">
                 <h1>Caractéristiques - Système Photovoltaïque</h1>
                 <h2>Simulation de production et gestion énergétique</h2>
             </div>
@@ -143,7 +135,7 @@
     </header>
 
     <main>
-         <form id="config-form" action="{{ url_for('dashboard') }}" method="GET" class="austral-config-form">
+         <form id="config-form" action="{{ url_for('dashboard') }}" method="GET" class="EnergiX-config-form">
 			<div class="form-grid">
 				<div class="form-group">
 					<label for="puissance_centrale">⚡ Puissance Centrale</label>
@@ -203,49 +195,70 @@
 
 		
 		<!-- Résumé de la recherche avec padding ajusté -->
-		<div class="result" 
-			 style="padding: 7px 10px; background-color: #FFF9E3; border-radius: 8px;
-					box-shadow: 0 2px 8px rgba(240, 195, 0, 0.07);
-					font-size: 0.9rem; font-family: Arial, sans-serif;
-					line-height: 1.45; text-align: justify;">
+		<details class="result-accordion" style="max-width: 500px; margin: 0 auto 20px auto;" open>
+			<summary style="
+				list-style: none; 
+				cursor: pointer; 
+				padding: 15px; 
+				background-color: rgba(255, 249, 227, 0.95); 
+				border: 2px solid #ff4d00; 
+				border-radius: 20px; 
+				box-shadow: 0 4px 12px rgba(240, 195, 0, 0.08);
+				text-align: center;
+				transition: all 0.3s ease;">
+				
+				<h3 style="
+					display: inline-block; 
+					font-family: 'Montserrat', sans-serif; 
+					color: #1e293b; 
+					margin: 0; 
+					text-transform: uppercase; 
+					font-size: 0.85rem; 
+					letter-spacing: 1px;">
+					📋 Résumé de la simulation
+				</h3>
+				<span class="acc-arrow" style="margin-left: 10px; color: #ff4d00; font-weight: bold;">▼</span>
+			</summary>
 
-			<h3 style="text-align:center;font-family: 'Montserrat';margin-bottom:5px; margin-top:0px";>Résumé de la simulation</h3>
+			<div class="result-content" style="
+				padding: 20px; 
+				background-color: rgba(255, 255, 255, 0.95); 
+				border: 2px solid #ff4d00; 
+				border-top: none; 
+				border-radius: 0 0 20px 20px; 
+				margin-top: -15px; 
+				box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+				font-size: 0.9rem; 
+				font-family: 'Segoe UI', Arial, sans-serif;">
 
-			<ul style="list-style:none; font-family: 'Arial'; font-weight: 500; font-size: 0.9rem; padding-left:5px; margin:0;text-align:center;">
-				<li><span style="color:#000;"></span> Type de centrale : 
-					<span style="color:#000;">{{ puissance_centrale }} kWc</span>
-				</li>
+				<ul style="list-style:none; padding: 0; margin: 0; text-align: center;">
+					<li style="margin-bottom: 8px;">
+						<span style="color: #64748b;">⚡ Type de centrale :</span> 
+						<span style="color: #002395; font-weight: 700;">{{ puissance_centrale }} kWc</span>
+					</li>
 
-				<li><span style="color:#000;"></span>Capacité batterie :
-					<span style="color:#000;">{{ capacite_batterie }} kWh</span>
-				</li>
+					<li style="margin-bottom: 8px;">
+						<span style="color: #64748b;">🔋 Capacité batterie :</span> 
+						<span style="color: #002395; font-weight: 700;">{{ capacite_batterie }} kWh</span>
+					</li>
 
-				{% if enable_ve %}
-				<li>Borne véhicule électrique : <span>{{ borne_ve }} kW</span></li>
-			{% else %}
-				<li>Borne véhicule électrique : <span style="color:#888;">Non activée</span></li>
-			{% endif %}
+					<li style="margin-bottom: 8px;">
+						<span style="color: #64748b;">🚗 Borne véhicule :</span> 
+						{% if enable_ve %}
+							<span style="color: #002395; font-weight: 700;">{{ borne_ve }} kW</span>
+						{% else %}
+							<span style="color: #94a3b8; font-style: italic;">Non activée</span>
+						{% endif %}
+					</li>
 
+					<li style="margin-top: 10px; padding-top: 10px; border-top: 1px dashed #F0C300;">
+						<span style="color: #64748b;">📦 Estimation matériel :</span> 
+						<span style="color: #002395; font-weight: 700;">{{ nb_panneaux }} panneaux</span>
+					</li>
+				</ul>
+			</div>
+		</details>
 
-				<li><span style="color:#000;"></span> Nombre de panneaux requis estimés :
-					<span style="color:#000;">{{ nb_panneaux }} panneaux</span>
-				</li>
-			</ul>
-
-		</div>
-
-		<div class="button-group" style="text-align:center; margin:20px 0;">
-			<a href="{{ url_for('show_conso_prod') }}" class="back-button">
-				Retour à la consommation & Production
-			</a>
-			<a href="{{ url_for('show_graph') }}" class="back-button">
-				Retour aux résultats estimés
-			</a>
-			<a href="{{ url_for('show_recommendation') }}" class="back-button">
-				Retour à la recommandation
-			</a>
-		</div>
-   
 		<details id="flux-puissance" class="solar-details" open>
 			<summary class="solar-summary">
 				📊 Équilibre Énergétique : Production vs Demande
@@ -290,17 +303,35 @@
 		</div>
 	
 		<div class="button-group" style="text-align:center; margin:20px 0;">
+			<a class="back-button" href="/">Accueil</a>
+			
+			<a href="{{ url_for('show_recommendation') }}" class="back-button">
+				Recommandation
+			</a>
+			
 			<a href="{{ url_for('show_conso_prod') }}" class="back-button">
-				Retour à la consommation & Production
+				Conso & Production
 			</a>
 			<a href="{{ url_for('show_graph') }}" class="back-button">
-				Retour aux résultats estimés
-			</a>
-			<a href="{{ url_for('show_recommendation') }}" class="back-button">
-				Retour à la recommandation
+				Résultats estimés
 			</a>
 		</div>
 
     </main>
+	<footer style="margin-top: 10px; padding: 10px; text-align: center; border-top: 1px solid #eee;">
+        
+		<div style="text-align: center; padding: 10px; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #000000;">
+			<p style="margin: 0;">
+				© 2026 <span style="color: #002395; font-weight: 800;">Energi</span><span style="color: #ff4d00; font-weight: 800;">X_97441</span>. 
+				Tous droits réservés.
+			</p>
+			
+			<div style="width: 120px; height: 2px; background: #F0C300; margin: 12px auto; border-radius: 2px; box-shadow: 0 1px 3px rgba(255, 77, 0, 0.3);"></div>
+			
+			<p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; font-weight: 600;">
+				L'expertise solaire locale
+			</p>
+		</div>
+    </footer>
 </body>
 </html>

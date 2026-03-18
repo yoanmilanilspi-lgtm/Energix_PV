@@ -3,22 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recommandation Panneaux Photovoltaïques</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Energix PV Réunion - Recommandation de Centrale Solaire</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.1">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon/favicon.ico') }}">
+
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/favicon/apple-touch-icon.png') }}">
+
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon/favicon-32x32.png') }}">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon/favicon-16x16.png') }}">
+
+	<link rel="manifest" href="{{ url_for('static', filename='img/favicon/site.webmanifest') }}">
     <style>
         .header-texts { flex-grow: 1; text-align: center; }
         .header-texts h1 { color: #FFF; font-size: 1.6rem; font-weight: 600; margin: 10px 0 5px 0; }
-        .header-texts h2 { color: #F0C300; font-size: 1.1rem; font-weight: 400; margin: 0; }
+        .header-texts h2 { color: #a3daff;  font-size: 1.1rem; font-weight: 400; margin: 0; }
         .form-group.grayed { opacity: 0.4; pointer-events: none; transition: 0.3s; }
     </style>
 </head>
 <body>
     <header>
         <div class="header-container">
-            <img src="{{ url_for('static', filename='img/Austral Solar.jpg') }}" alt="Logo" id="logo">
+            <img src="{{ url_for('static', filename='img/EnergiX.svg') }}" alt="Logo" id="logo">
             <div class="header-texts">
                 <h1>Recommandation de centrale solaire</h1>
-                <h2>Austral Groupe Energie</h2>
+                <h2>Energix PV Réunion - Expertise Solaire 974</h2>
             </div>
         </div>
     </header>
@@ -26,10 +34,52 @@
     <div class="container">
         <form method="POST">
             <div class="form-group">
-                <p class="form-info">
-                    Vous pouvez renseigner <strong>soit</strong> le nombre d'habitants, <strong>soit</strong> la consommation mensuelle moyenne.<br>
-					La consommation mensuelle en (kWh) est <strong>recommandée</strong> pour une estimation plus précise.
-                </p>
+				<details class="EnergiX-info-pad" style="max-width: 500px; margin: 2px auto 20px auto;">
+					<summary style="
+						list-style: none; 
+						cursor: pointer; 
+						padding: 8px 30px; 
+						/* TRANSPARENCE ACCENTUÉE : 0.4 pour un effet verre givré */
+						background: rgba(163, 218, 255, 0.4); 
+						border: 2px solid #00d4ff; 
+						border-radius: 40px; 
+						text-align: center;
+						box-shadow: 0 4px 12px rgba(0, 212, 255, 0.1);
+						transition: all 0.3s ease;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						gap: 10px;
+						backdrop-filter: blur(4px); /* Ajoute un effet de flou pour la lisibilité */
+						-webkit-backdrop-filter: blur(4px);">
+						
+						<span style="color: #002395; font-weight: 800; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; font-family: 'Montserrat', sans-serif;">
+							ℹ️ INFOS
+						</span>
+						<span class="info-arrow" style="color: #002395; font-weight: bold; transition: 0.3s;">▼</span>
+					</summary>
+
+					<div class="info-content" style="
+						/* Contenu légèrement plus opaque pour bien lire le texte */
+						background: rgba(255, 255, 255, 0.9);
+						border: 2px solid #00d4ff;
+						border-top: none;
+						padding: 12px 30px;
+						border-radius: 0 0 30px 30px;
+						margin-top: -10px; /* Recouvrement pour unifier les bordures */
+						text-align: center;
+						font-size: 0.8rem;
+						color: #1e293b;
+						box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+						position: relative;
+						z-index: 4;">
+						
+						<p style="margin: 0; line-height: 1.5; font-weight: 500;">
+							Vous pouvez renseigner <strong>soit</strong> le nombre d'habitants, <strong>soit</strong> la consommation mensuelle moyenne.<br>
+							La consommation mensuelle en (kWh) est <strong>recommandée</strong> pour une estimation plus précise.
+						</p>
+					</div>
+				</details>
             </div>
 
             <div class="form-row">
@@ -135,5 +185,54 @@
             catSelect.dispatchEvent(new Event('change'));
         });
     </script>
+		<p class="reveal-footer" style="text-align: center; color: #1e293b; font-size: 0.9rem; line-height: 1.6; max-width: 800px; margin: 10px auto 20px auto; padding: 0 10px;">
+			L'outil <strong>Energix PV</strong> analyse votre consommation pour vous proposer la meilleure installation photovoltaïque .<br>
+			Développé par <strong>Energix PV 97441</strong> pour optimiser votre autonomie solaire à La Réunion.
+		</p>
+		<div class="visitor-counter">
+			<div id="stats-badge-pv">
+				<span class="status-dot"></span>
+				<span style="color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.7rem;">Live :</span>
+				<span id="visitor-count-pv">Disponible</span>
+			</div>
+		</div>
+	<footer style="margin-top: 10px; padding: 10px; text-align: center; border-top: 1px solid #eee;">
+        
+		<div style="text-align: center; padding: 10px; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #000000;">
+			<p style="margin: 0;">
+				© 2026 <span style="color: #002395; font-weight: 800;">Energi</span><span style="color: #ff4d00; font-weight: 800;">X_97441</span>. 
+				Tous droits réservés.
+			</p>
+			
+			<div style="width: 120px; height: 2px; background: #F0C300; margin: 12px auto; border-radius: 2px; box-shadow: 0 1px 3px rgba(255, 77, 0, 0.3);"></div>
+			
+			<p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; font-weight: 600;">
+				L'expertise solaire locale
+			</p>
+		</div>
+    </footer>
+	<script data-goatcounter="https://energix-pv.goatcounter.com/count" 
+			async src="//gc.zgo.at/count.js"></script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+			setTimeout(() => {
+				fetch('https://energix-pv.goatcounter.com/counter/total.json')
+					.then(response => response.json())
+					.then(data => {
+						const badge = document.getElementById('visitor-count-pv');
+						if (badge) {
+							badge.innerText = "Disponible"; 
+							// Style réduit pour plus de finesse
+							badge.style.fontSize = "0.6rem";
+							badge.style.letterSpacing = "0.5px";
+							badge.style.fontWeight = "600";
+							badge.style.textTransform = "uppercase";
+						}
+					})
+					.catch(err => console.log("Stats PV en attente"));
+			}, 1000);
+		});
+	</script>
 </body>
 </html>
