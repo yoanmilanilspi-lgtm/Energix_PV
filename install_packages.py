@@ -38,7 +38,7 @@ def check_and_install(package):
             return False
 
 if __name__ == "__main__":
-    print("🚀 Installation automatique Calculatrice 4")
+    print("🌍 Installation automatique")
     
     # Lit requirements.txt optimisé
     dependencies = read_requirements("requirements.txt")

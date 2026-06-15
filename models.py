@@ -1,6 +1,5 @@
 from utils import safe_float, safe_int
 import math
-
 # Données pour les datalists (synchronisées avec PVRecommender)
 FORM_DATA = {
     "consommation": [50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1200, 1500, 2000],
@@ -38,7 +37,6 @@ FORM_DATA = {
         ]
     }
 }
-
 class PVRecommender:
     def __init__(self):
         self.lieux_infos = {
@@ -53,7 +51,6 @@ class PVRecommender:
             "Deux-Rives (97441)":             {"code_postal": "97441", "intercommunalite": "CINOR", "zone": "Zone 5 (Nord)"},
             "Bras-Pistolet (97441)":          {"code_postal": "97441", "intercommunalite": "CINOR", "zone": "Zone 5 (Nord)"},
             "Quartier-Français (97441)":      {"code_postal": "97441", "intercommunalite": "CINOR", "zone": "Zone 5 (Nord)"},
-
             # --- CIREST (EST & CIRQUES) ---
             "Saint-André (97440)":            {"code_postal": "97440", "intercommunalite": "CIREST", "zone": "Zone 2 (Est)"},
             "Cambuston (97440)":              {"code_postal": "97440", "intercommunalite": "CIREST", "zone": "Zone 2 (Est)"},
@@ -67,7 +64,6 @@ class PVRecommender:
             "Salazie (97433)":                {"code_postal": "97433", "intercommunalite": "CIREST", "zone": "Zone 3 (Les Hauts)"},
             "Hell-Bourg (97433)":             {"code_postal": "97433", "intercommunalite": "CIREST", "zone": "Zone 3 (Les Hauts)"},
             "Grand Îlet (97433)":             {"code_postal": "97433", "intercommunalite": "CIREST", "zone": "Zone 3 (Les Hauts)"},
-
             # --- TCO (OUEST) ---
             "Le Port (97420)":                {"code_postal": "97420", "intercommunalite": "TCO", "zone": "Zone 1 (Ouest)"},
             "La Possession (97419)":          {"code_postal": "97419", "intercommunalite": "TCO", "zone": "Zone 1 (Ouest)"},
@@ -84,7 +80,6 @@ class PVRecommender:
             "La Chaloupe (97436)":            {"code_postal": "97436", "intercommunalite": "TCO", "zone": "Zone 1 (Ouest)"},
             "Les Avirons (97425)":            {"code_postal": "97425", "intercommunalite": "TCO", "zone": "Zone 3 (Les Hauts)"},
             "L'Étang-Salé (97427)":           {"code_postal": "97427", "intercommunalite": "TCO", "zone": "Zone 1 (Ouest)"},
-
             # --- CIVIS (SUD) ---
             "Saint-Louis (97450)":            {"code_postal": "97450", "intercommunalite": "CIVIS", "zone": "Zone 6 (Sud)"},
             "La Rivière (97421)":             {"code_postal": "97421", "intercommunalite": "CIVIS", "zone": "Zone 6 (Sud)"},
@@ -93,7 +88,6 @@ class PVRecommender:
             "Grand-Bois (97410)":             {"code_postal": "97410", "intercommunalite": "CIVIS", "zone": "Zone 6 (Sud)"},
             "Terre-Sainte (97410)":           {"code_postal": "97410", "intercommunalite": "CIVIS", "zone": "Zone 6 (Sud)"},
             "Petite-Île (97429)":             {"code_postal": "97429", "intercommunalite": "CIVIS", "zone": "Zone 6 (Sud)"},
-
             # --- CASUD (SUD) ---
             "Entre-Deux (97414)":             {"code_postal": "97414", "intercommunalite": "CASUD", "zone": "Zone 6 (Sud)"},
             "Le Tampon (97430)":              {"code_postal": "97430", "intercommunalite": "CASUD", "zone": "Zone 4 (Altitude >800m)"},
@@ -106,11 +100,9 @@ class PVRecommender:
             "Plaine des Grègues (97480)":     {"code_postal": "97480", "intercommunalite": "CASUD", "zone": "Zone 6 (Sud)"},
             "Saint-Philippe (97442)":         {"code_postal": "97442", "intercommunalite": "CASUD", "zone": "Zone 6 (Sud)"}
         }
-
         self.panneaux = [
             {"puissance": 500, "surface": 2.2, "prix_materiel": 800, "prix_pose": 1400}
         ]
-
         self.centrales = [
             {"taille": 15, "puissance": 3, "Zone 1 (Ouest)": 4536, "Zone 2 (Est)": 3942, "Zone 3 (Les Hauts)": 3750,
              "Zone 4 (Altitude >800m)": 4146, "Zone 5 (Nord)": 4398, "Zone 6 (Sud)": 4188},
@@ -125,70 +117,135 @@ class PVRecommender:
             {"taille": 90, "puissance": 18, "Zone 1 (Ouest)": 27216, "Zone 2 (Est)": 23652, "Zone 3 (Les Hauts)": 22500,
              "Zone 4 (Altitude >800m)": 24876, "Zone 5 (Nord)": 26388, "Zone 6 (Sud)": 25128}
         ]
-
-        self.centrales_legacy = [
-            {"taille": 15, "puissance": 3, "production_min": (4500, 5500)},
-            {"taille": 30, "puissance": 6, "production_min": (9000, 11000)},
-            {"taille": 45, "puissance": 9, "production_min": (13500, 16500)},
-            {"taille": 60, "puissance": 12, "production_min": (18000, 22000)},
-            {"taille": 75, "puissance": 15, "production_min": (22500, 27500)},
-            {"taille": 90, "puissance": 18, "production_min": (27000, 33000)}
+        self.references = {
+            "zone": {
+                "Zone 1 (Ouest)": "https://re.jrc.ec.europa.eu/pvg_tools/en/#PVP",
+                "Zone 2 (Est)": "https://re.jrc.ec.europa.eu/pvg_tools/en/#PVP",
+                "Zone 3 (Les Hauts)": "https://re.jrc.ec.europa.eu/pvg_tools/en/#PVP",
+                "Zone 4 (Altitude >800m)": "https://re.jrc.ec.europa.eu/pvg_tools/en/#PVP",
+                "Zone 5 (Nord)": "https://re.jrc.ec.europa.eu/pvg_tools/en/#PVP",
+                "Zone 6 (Sud)": "https://re.jrc.ec.europa.eu/pvg_tools/en/#PVP"
+            },
+            "intercommunalite": {
+                "CINOR": "https://www.cinor.fr",
+                "CIREST": "https://www.cirest.fr",
+                "TCO": "https://www.tco.re",
+                "CIVIS": "https://www.civis.re",
+                "CASUD": "https://www.casud.re"
+            },
+            "region": {
+                "Nord": "https://www.saintdenis.re",
+                "Sud": "https://www.sudreunion.fr",
+                "Est": "https://www.estreunion.fr",
+                "Ouest": "https://www.ouest-lareunion.com",
+                "Les Hauts": "https://www.reunion.fr"
+            },
+            "ile": {
+                "La Réunion": "https://fr.wikipedia.org/wiki/La_Réunion"
+            }
+        }  
+    def get_references(self, lieu):
+        if lieu in ["Toute l'île", "La Réunion", None, "", "Multi-secteurs"]:
+            return {
+                "zone": {
+                    "label": "Toute l'île",
+                    "url": "https://re.jrc.ec.europa.eu/pvg_tools/en/#PVP"
+                },
+                "intercommunalite": {
+                    "label": "Multi-secteurs",
+                    "url": "https://fr.wikipedia.org/wiki/La_Réunion"
+                },
+                "region": {
+                    "label": "Île entière",
+                    "url": "https://www.reunion.fr"
+                },
+                "ile": {
+                    "label": "La Réunion",
+                    "url": self.references["ile"]["La Réunion"]
+                }
+            }
+        if lieu not in self.lieux_infos:
+            return {}
+        info = self.lieux_infos[lieu]
+        zone = info["zone"]
+        interco = info["intercommunalite"]
+        if "Nord" in zone:
+            region = "Nord"
+        elif "Sud" in zone:
+            region = "Sud"
+        elif "Est" in zone:
+            region = "Est"
+        elif "Ouest" in zone:
+            region = "Ouest"
+        else:
+            region = "Les Hauts"
+        return {
+            "zone": {
+                "label": zone,
+                "url": self.references["zone"].get(zone)
+            },
+            "intercommunalite": {
+                "label": interco,
+                "url": self.references["intercommunalite"].get(interco)
+            },
+            "region": {
+                "label": region,
+                "url": self.references["region"].get(region)
+            },
+            "ile": {
+                "label": "La Réunion",
+                "url": self.references["ile"]["La Réunion"]
+            }
+        }
+    def calculer_moyenne_reunion(self, p_centrale):
+        """Calcule la moyenne de production pour toutes les zones pour une puissance donnée."""
+        centrale_data = next((c for c in self.centrales if c['puissance'] == p_centrale), self.centrales[0])
+        
+        zones_cles = [
+            "Zone 1 (Ouest)", "Zone 2 (Est)", "Zone 3 (Les Hauts)", 
+            "Zone 4 (Altitude >800m)", "Zone 5 (Nord)", "Zone 6 (Sud)"
         ]
-
-        self.prix_min_centrale_pose = 8000
-    
+        valeurs = []
+        for zone in zones_cles:
+            if zone in centrale_data:
+                valeurs.append(centrale_data[zone])
+        
+        if not valeurs:
+            return 4160 # Valeur de secours par défaut si rien n'est trouvé
+        return int(sum(valeurs) / len(valeurs))
     def facteur_orientation(self, inclinaison, orientation):
         orientation_penalty = max(0, abs(orientation) - 30) * 0.003
         inclinaison_penalty = max(0, abs(inclinaison - 22)) * 0.005
         facteur = 1 - orientation_penalty - inclinaison_penalty
         return max(0.85, min(1.0, facteur))
-
     def get_zone_from_input(self, lieu_saisi):
-        # Nettoyage de la saisie
         lieu_saisi = (lieu_saisi or "").strip().upper()
-        
         if not lieu_saisi:
-            return "Zone 1 (Ouest)", "Toute l'île", "Non spécifiée"
-
+            return "La Réunion", "Toute l'île", "Multi-secteurs"
         villes_trouvees = []
         zone_detectee = None
         interco_detectee = None
-
-        # On parcourt notre base de données
         for commune, infos in self.lieux_infos.items():
-            # Variables de comparaison
             commune_upper = commune.upper()
             cp = infos["code_postal"]
             interco = infos["intercommunalite"].upper()
             zone_name = infos["zone"].upper()
-
-            # TEST DE CORRESPONDANCE :
-            # Si la saisie est dans le nom de la ville, le CP, l'interco ou le nom de la zone
             if (lieu_saisi in commune_upper or 
                 lieu_saisi == cp or 
                 lieu_saisi == interco or 
                 lieu_saisi in zone_name):
-                
                 villes_trouvees.append(commune)
-                
-                # On mémorise la zone et l'interco du premier résultat trouvé
                 if not zone_detectee:
                     zone_detectee = infos["zone"]
                     interco_detectee = infos["intercommunalite"]
-
-        # Si on a trouvé des villes
         if villes_trouvees:
             villes_trouvees.sort()
-            # On limite l'affichage pour éviter de casser le design si la liste est trop longue
             if len(villes_trouvees) > 15:
                 description = " • ".join(villes_trouvees[:15]) + " ... (et autres)"
             else:
                 description = " • ".join(villes_trouvees)
-                
             return zone_detectee, description, interco_detectee
-
-        # 3. Fallback définitif si vraiment rien n'est trouvé
-        return "Zone 1 (Ouest)", "Lieu non répertorié", "TCO"
+        return "La Réunion", "Toute l'île", "Multi-secteurs"
     
     def get_details_by_group(self, type_group, valeur):
         """
@@ -197,32 +254,23 @@ class PVRecommender:
         """
         villes_trouvees = []
         zone_detectee = None
-        
         valeur_clean = valeur.strip().upper()
         
         for ville, infos in self.lieux_infos.items():
             if infos[type_group].upper() == valeur_clean or infos[type_group].upper() in valeur_clean:
                 villes_trouvees.append(ville)
                 zone_detectee = infos['zone']
-        
         return villes_trouvees, zone_detectee
-
     def calculer_recommandation(self, surface_dispo, budget_max, conso_mensuelle, zone):
         """Détermine la meilleure centrale selon les contraintes."""
-        meilleure = self.centrales[0] # Par défaut 3 kWc
-        
+        meilleure = self.centrales[0] 
         for c in self.centrales:
-            # Calcul du prix estimé pour cette centrale
             nb_panneaux = int((c['puissance'] * 1000) / 500)
             prix_estim_total = nb_panneaux * (400 + 1333) # Matériel + Pose
-            
             if c['taille'] <= surface_dispo and prix_estim_total <= budget_max:
                 meilleure = c
-        
-        # Données calculées pour le retour
         nb_p = int((meilleure['puissance'] * 1000) / 500)
         prod_a = meilleure.get(zone, 4536)
-        
         return {
             "puissance": meilleure['puissance'],
             "nb_panneaux": nb_p,
@@ -232,94 +280,85 @@ class PVRecommender:
             "prod_annuelle": prod_a,
             "conso_mensuelle": conso_mensuelle
         }
-        
+    def consommation_estimee(self, surface, budget):
+        """
+        Détermine la consommation mensuelle cible (kWh) en croisant 
+        le budget disponible et la surface exploitable.
+        """
+        nb_panneaux_budget = int(budget / 1733)
+        puissance_budget = (nb_panneaux_budget * 500) / 1000
+        puissance_surface = (surface / 15) * 3
+        puissance_cible = min(puissance_budget, puissance_surface)
+        consommation_cible = puissance_cible * 115
+        return round(consommation_cible, 1)
     def recommend_pv(self, surface, consommation_mensuelle, budget, zone):
-        # 1. Logique de sélection (3 kWc ou 6 kWc)
-        p_centrale = 6 if surface >= 30 else 3
-        
-        # 2. Récupération des données de production selon la zone
-        centrale_data = next((c for c in self.centrales if c['puissance'] == p_centrale), self.centrales[0])
-        p_annuelle = centrale_data.get(zone, 4536)
-
-        # 3. Calculs financiers et techniques détaillés
+        if consommation_mensuelle <= 300:
+            besoin_reel = self.consommation_estimee(surface, budget)
+        else:
+            besoin_reel = consommation_mensuelle
+        meilleure_centrale = self.centrales[0]
+        for c in self.centrales:
+            nb_p_test = int((c['puissance'] * 1000) / 500)
+            prix_test = nb_p_test * 1033
+            if c['taille'] <= surface and prix_test <= budget:
+                meilleure_centrale = c
+        p_centrale = meilleure_centrale['puissance']
+        if zone == "La Réunion":
+            p_annuelle = self.calculer_moyenne_reunion(p_centrale)
+        else:
+            p_annuelle = meilleure_centrale.get(zone, 4160)
         nb_panneaux = int((p_centrale * 1000) / 500)
-        surface_reelle = nb_panneaux * 2.2
-        
-        # Détail des prix
-        prix_materiel_seul = int(nb_panneaux * 400)
+        surface_reelle = round(nb_panneaux * 2.2, 1)
         prix_total_pose = int(nb_panneaux * 1733)
-        
-        # Calculs de production
         p_mensuelle = round(p_annuelle / 12, 1)
         p_journaliere = round(p_annuelle / 365, 1)
-        taux_couverture = round((p_mensuelle / consommation_mensuelle) * 100)
-
-        # 4. Génération du HTML (Version épurée pour intégration)
-        # Contenu épuré (Python)
+        taux_couverture = round((p_mensuelle / besoin_reel) * 100)
         html = f"""
-        <div style="font-family: 'Segoe UI', Arial, sans-serif; color: #4B5563; padding: 10px 5px;">
-            
-            <div style="border-bottom: 2px solid #F0C300; margin-bottom: 15px; padding-bottom: 8px;">
-                <p style="margin:0; color: #92400E; font-weight: bold; text-transform: uppercase; font-size: 0.8em; letter-spacing: 0.5px;">Fiche Technique</p>
-            </div>
-
-            <ul style="list-style:none; padding-left:0; font-size: 0.95em; line-height: 1.6; margin-bottom: 20px;">
-                <li>📍 <b>Secteur :</b> {zone}</li>
-                <li>🔌 <b>Besoin :</b> {consommation_mensuelle} kWh/mois</li>
-                <li>📏 <b>Surface :</b> {surface} m² | 💰 <b>Budget :</b> {budget} €</li>
+        <div class='energiX-tech-card'>
+            <div class='energiX-tech-title'>Fiche Technique</div>
+            <ul class='energiX-tech-list'>
+                <li>📍 Secteur : {zone}</li>
+                <li>🔌 Besoin : {besoin_reel} kWh/mois</li>
+                <li>📏 Surface : {surface} m² | 💰 Budget : {budget} €</li>
             </ul>
-            
-            <p style="color: #92400E; font-weight: bold; font-size: 1em; margin: 15px 0; text-align: center;">
+            <p class='energiX-tech-highlight'>
                 Puissance conseillée : {p_centrale} kWc
             </p>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
-                <div style="background: #FFFBEB; padding: 12px; border-radius: 10px; border: 1px solid #FEF3C7; text-align: center;">
-                    <span style="font-size: 0.75em; color: #B45309; font-weight: bold;">MATÉRIEL</span><br>
-                    <b style="font-size: 1em;">{nb_panneaux} panneaux</b>
+            <div class='energiX-tech-grid'>
+                <div class='energiX-tech-box'>
+                    <span>MATÉRIEL</span><br>
+                    <b>{nb_panneaux} panneaux</b>
                 </div>
-                <div style="background: #FFFBEB; padding: 12px; border-radius: 10px; border: 1px solid #FEF3C7; text-align: center;">
-                    <span style="font-size: 0.75em; color: #B45309; font-weight: bold;">BUDGET ESTIMÉ</span><br>
-                    <b style="font-size: 1em;">{prix_total_pose} €</b>
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: center; width: 100%; padding: 10px 0;">
-    
-                <div style="background: #1a1a1a; padding: 7px 25px; border-radius: 20px; color: #F0C300; display: flex; align-items: center; gap: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); font-family: sans-serif;">
-                    
-                    <div style="border-right: 2px solid #F0C300; padding-right: 20px; font-weight: 700; font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; white-space: nowrap;">
-                      Rendement Estimé
-                    </div>
-
-                    <div style="text-align: center;">
-                        <div style="color: #8E8E8E; font-size: 0.7em; text-transform: uppercase; margin-bottom: 2px;">Annuel</div>
-                        <div style="color: #FFF; font-weight: bold; font-size: 1.1em;">{p_annuelle} <small style="font-weight: normal; color: #8E8E8E; font-size: 0.7em;">kWh</small></div>
-                    </div>
-
-                    <div style="height: 25px; width: 1px; background: rgba(255,255,255,0.1);"></div>
-
-                    <div style="text-align: center;">
-                        <div style="color: #8E8E8E; font-size: 0.7em; text-transform: uppercase; margin-bottom: 2px;">Mensuel</div>
-                        <div style="color: #FFF; font-weight: bold; font-size: 1.1em;">{p_mensuelle} <small style="font-weight: normal; color: #8E8E8E; font-size: 0.7em;">kWh</small></div>
-                    </div>
-
-                    <div style="height: 25px; width: 1px; background: rgba(255,255,255,0.1);"></div>
-
-                    <div style="text-align: center;">
-                        <div style="color: #8E8E8E; font-size: 0.7em; text-transform: uppercase; margin-bottom: 2px;">Journalier</div>
-                        <div style="color: #F0C300; font-weight: 900; font-size: 1.1em;">{p_journaliere} <small style="font-weight: normal; color: #8E8E8E; font-size: 0.7em;">kWh</small></div>
-                    </div>
-
+                <div class='energiX-tech-box'>
+                    <span>BUDGET ESTIMÉ</span><br>
+                    <b>{prix_total_pose} €</b>
                 </div>
             </div>
-            
-            <p style="font-size: 0.85em; color: #4B5563; margin-top: 15px; padding: 10px; border-left: 3px solid #F0C300; background: #FFF9E3;">
-                💡 <b>Couverture :</b> Ce système assure <b>{taux_couverture}%</b> de votre autonomie.
-            </p>
+            <div class='energiX-tech-performance'>
+                <div class='energiX-perf-title'>Rendement estimé</div>
+
+                <div class='energiX-perf-block'>
+                    <div class='energiX-perf-label'>Année</div>
+                    <div class='energiX-perf-value'>{p_annuelle} kWh</div>
+                </div>
+                <div class='energiX-perf-sep'></div>
+
+                <div class='energiX-perf-block'>
+                    <div class='energiX-perf-label'>Mois</div>
+                    <div class='energiX-perf-value'>{p_mensuelle} kWh</div>
+                </div>
+                <div class='energiX-perf-sep'></div>
+                <div class='energiX-perf-block'>
+                    <div class='energiX-perf-label'>Jour</div>
+                    <div class='energiX-perf-value'>{p_journaliere} kWh</div>
+                </div>
+            </div>
+            <div class='energiX-tech-footer'>
+                💡 <em>Couverture : Cette centrale assure {taux_couverture}% de votre autonomie.<br>
+                Recommandation principale basée sur vos contraintes.</em>
+            </div>
         </div>
         """
-        return html, p_centrale, p_annuelle, p_mensuelle, p_journaliere
+        return html, p_centrale, p_annuelle, p_mensuelle, p_journaliere, besoin_reel
 
 
-    

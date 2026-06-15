@@ -67,7 +67,7 @@ def obtenir_nb_panneaux(puissance_kwc, pmax_panneau=500):
     
 def snapper_puissance_catalogue(p_theorique):
     """
-    Règle Austral Solar : Convertit la puissance théorique en paliers réels.
+    Règle EnergiX : Convertit la puissance théorique en paliers réels.
     Exemple : 4.6 kWc -> 6 kWc
     """
     paliers = [3, 6, 9, 12, 15, 18]

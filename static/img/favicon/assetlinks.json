@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.energixpv.app",
+    "sha256_cert_fingerprints": ["B3:A4:A1:A8:EC:32:FA:2C:EA:97:9D:7B:E4:3F:1B:AF:F5:5E:E5:73:9E:7E:57:5E:62:EE:5D:10:13:B8:BE:83"]
+  }
+}]

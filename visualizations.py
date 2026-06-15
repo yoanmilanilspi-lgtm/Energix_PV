@@ -135,8 +135,6 @@ def courbes_data(surface, budget, consommation_estimee, production_annuelle, cap
         delta = p - c
         current_charge = max(capa_wh * 0.1, min(capa_wh, current_charge + delta))
         soc.append((current_charge / capa_wh) * 100)
-
-    # --- STYLE COMMUN (Austral Dark) ---
     layout_dark = dict(
         paper_bgcolor='#000000',
         plot_bgcolor='#000000',
@@ -146,19 +144,15 @@ def courbes_data(surface, budget, consommation_estimee, production_annuelle, cap
         margin=dict(l=50, r=20, t=50, b=50),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5)
     )
-
     # --- G1 : ÉQUILIBRE ÉNERGÉTIQUE ---
     fig_p = go.Figure()
-    
-    # Production PV (Jaune-Ambre) - Inchangé
+    # Production PV 
     fig_p.add_trace(go.Scatter(
         x=heures, y=prod_h, name="Production PV", 
         fill='tozeroy', 
         line=dict(color='#F59E0B', width=3),
         fillcolor='rgba(245, 158, 11, 0.15)'
     ))
-    
-    # Consommation (Modifiée en Rouge, Ligne Pleine, Remplissage Translucide)
     fig_p.add_trace(go.Scatter(
         x=heures, y=cons_h, 
         name="Consommation", 
@@ -169,9 +163,7 @@ def courbes_data(surface, budget, consommation_estimee, production_annuelle, cap
         ),
         fillcolor='rgba(255, 0, 0, 0.15)' # Rouge très translucide (15% d'opacité)
     ))
-    
     fig_p.update_layout(title="Équilibre Énergétique (24h)", **layout_dark)
-
     # --- G2 : ÉTAT DE LA BATTERIE ---
     fig_soc = go.Figure()
     fig_soc.add_trace(go.Scatter(
@@ -196,57 +188,42 @@ def courbes_data(surface, budget, consommation_estimee, production_annuelle, cap
         marker_color='#DC2626', opacity=0.8
     ))
     fig_flux.update_layout(barmode='overlay', title="Flux Entrants/Sortants", **layout_dark)
-
     return {
         "plot_puissance": pio.to_html(fig_p, full_html=False, config={'displayModeBar': False}),
         "plot_soc": pio.to_html(fig_soc, full_html=False, config={'displayModeBar': False}),
         "plot_flux": pio.to_html(fig_flux, full_html=False, config={'displayModeBar': False})
     }
 
-
 def trace_courbes(df, C_bat, puissance_borne_ve, heures_ve, p_centrale_kwc=6.0):
     SOC = [80.0]
     P_bat, P_edf = [], []
-
-    # --- 1. CONFIGURATION PHYSIQUE ---
     Vmp_unitaire = 37.47
     Pmax_panneau = 500
-
     nb_total = int((p_centrale_kwc * 1000) / Pmax_panneau)
     nb_strings = 2 if p_centrale_kwc > 6 else 1
+    s = "s" if nb_strings > 1 else ""
     panneaux_par_string = nb_total / nb_strings
-
     # Puissance crête totale
     Pmax_centrale = nb_total * Pmax_panneau
-
-    # --- 1B. FACTEUR DE PERFORMANCE (PR) ---
-    # Valeurs réalistes basées sur tes exemples
     if p_centrale_kwc <= 3:
         PR = 0.92     # ≈ 2800 W pour 3 kWc
     elif p_centrale_kwc <= 8:
         PR = 0.96     # ≈ 7700 W pour 8 kWc
     else:
         PR = 0.97
-
     # Puissance max réellement atteignable
     Pmax_reel = Pmax_centrale * PR
-
-    # --- 1C. CORRECTION DE LA PRODUCTION PV ---
     df['Ppv_corr'] = df['Ppv'].clip(upper=Pmax_reel)
-
     # Recalcul tension/courant cohérents
     Vmp = panneaux_par_string * Vmp_unitaire
     Imp = Pmax_centrale / Vmp
-
     df['Vdc'] = [Vmp if p > 0 else 0 for p in df['Ppv_corr']]
     df['Idc'] = [min(p / Vmp, Imp) if Vmp > 0 else 0 for p in df['Ppv_corr']]
     df['Ppv_corr'] = df['Vdc'] * df['Idc']
-
     # --- 2. SIMULATION BATTERIE ---
     for t in range(len(df)):
         surplus = df['Ppv_corr'].iloc[t] - df['Pload_totale'].iloc[t]
         soc_actuel = SOC[-1]
-
         if surplus > 0:
             charge = min(surplus, (100 - soc_actuel) * (C_bat / 100))
             SOC.append(soc_actuel + (charge / C_bat * 100))
@@ -261,27 +238,24 @@ def trace_courbes(df, C_bat, puissance_borne_ve, heures_ve, p_centrale_kwc=6.0):
 
     df['SOC'] = SOC[:-1]
     df['P_bat'] = P_bat
-
-    # --- 3. GRAPHIQUES ---
-
-    # G1: ÉQUILIBRE ÉNERGÉTIQUE
     fig_equilibre = go.Figure()
     fig_equilibre.add_trace(go.Scatter(
-        x=df['Datetime'], y=df['Ppv_corr'], name="Production PV",
+        x=df['Datetime'], y=df['Ppv_corr'], name="Production PV (W)",
         fill='tozeroy', line=dict(color='#F59E0B', width=3),
         fillcolor='rgba(245, 158, 11, 0.15)'
     ))
     fig_equilibre.add_trace(go.Scatter(
-        x=df['Datetime'], y=df['Pload_totale'], name="Demande Totale",
+        x=df['Datetime'], y=df['Pload_totale'], name="Demande Totale (W)",
         fill='tozeroy', line=dict(color='#dc2626', width=3, dash='dash'),
         fillcolor='rgba(220, 38, 38, 0.1)'
     ))
     fig_equilibre.update_layout(
         title=dict(text="Équilibre Énergétique : Production vs Demande", x=0.5, y=0.95),
+        xaxis=dict(title="Heure (H)", showspikes=True, spikethickness=1, gridcolor="#f0f0f0"),
+        yaxis=dict(title="Puissance (W)", color="#FFA500", showspikes=True, spikethickness=1, gridcolor="#f0f0f0"),
         margin=dict(t=120), template="plotly_white", hovermode="x unified",
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5)
     )
-
     # G2: DÉTAIL DE LA CHARGE
     fig_load = go.Figure(go.Scatter(
         x=df['Datetime'], y=df['Pload_totale'], name="Consommation Totale",
@@ -292,57 +266,49 @@ def trace_courbes(df, C_bat, puissance_borne_ve, heures_ve, p_centrale_kwc=6.0):
         title=dict(text="Détail de la Charge (Bâtiment + VE)", x=0.5, y=0.95),
         margin=dict(t=120), template="plotly_white", hovermode="x unified"
     )
-
     # G3: SYNTHÈSE DES FLUX
     fig_flux = make_subplots(specs=[[{"secondary_y": True}]])
-
     fig_flux.add_trace(go.Scatter(
         x=df['Datetime'], y=df['Ppv_corr'], name="Prod PV (W)", fill='tozeroy',
         line=dict(color='#F59E0B', width=2), fillcolor='rgba(245, 158, 11, 0.1)'
     ), secondary_y=False)
-
     fig_flux.add_trace(go.Scatter(
         x=df['Datetime'], y=df['Pload_totale'], name="Conso (W)", fill='tozeroy',
         line=dict(color='red', width=2), fillcolor='rgba(255, 0, 0, 0.05)'
     ), secondary_y=False)
-
     fig_flux.add_trace(go.Scatter(
         x=df['Datetime'], y=P_edf, name="Import Réseau (W)", fill='tozeroy',
         line=dict(color='blue', width=1.5), fillcolor='rgba(0, 0, 255, 0.05)'
     ), secondary_y=False)
-
     fig_flux.add_trace(go.Scatter(
         x=df['Datetime'], y=df['P_bat'], name="Flux Bat (W)", fill='tozeroy',
         line=dict(color='purple', width=2, dash='dash'), fillcolor='rgba(128, 0, 128, 0.05)'
     ), secondary_y=False)
-
     fig_flux.add_trace(go.Scatter(
         x=df['Datetime'], y=df['SOC'], name="SOC Batterie (%)", fill='tozeroy',
         line=dict(color='#006400', width=3), fillcolor='rgba(0, 100, 0, 0.1)'
     ), secondary_y=True)
-
     fig_flux.update_layout(
         title=dict(text="Synthèse Énergétique : Flux & État de Charge", x=0.5, y=0.95),
         margin=dict(t=120), template="plotly_white", hovermode="x unified",
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5)
     )
+    fig_flux.update_xaxes(title="Heure (H)", showspikes=True, spikethickness=1, gridcolor="#f0f0f0")
     fig_flux.update_yaxes(title_text="Puissance (Watts)", secondary_y=False)
     fig_flux.update_yaxes(title_text="SOC (%)", range=[0, 105], secondary_y=True, color="#006400")
 
-    # G4: TENSION & COURANT DC
     fig_elec = make_subplots(specs=[[{"secondary_y": True}]])
     fig_elec.add_trace(go.Scatter(
         x=df['Datetime'], y=df['Vdc'], name="Tension DC (V)", fill='tozeroy',
         line=dict(color='#FFA500', width=3), fillcolor='rgba(255, 165, 0, 0.1)'
     ), secondary_y=False)
-
     fig_elec.add_trace(go.Scatter(
         x=df['Datetime'], y=df['Idc'], name="Courant DC (A)", fill='tozeroy',
         line=dict(color='#0000FF', width=3, dash='dot'), fillcolor='rgba(0, 0, 255, 0.05)'
     ), secondary_y=True)
-
     fig_elec.update_layout(
-        title=dict(text=f"Caractéristiques Électriques DC ({int(panneaux_par_string)} pan./chaine)", x=0.5, y=0.95),
+        title=dict(text=f"Caractéristiques Électriques DC ({int(panneaux_par_string)} panneaux en {int(nb_strings)} chaîne{s})", x=0.5, y=0.95),
+        xaxis=dict(title="Heure (H)", showspikes=True, spikethickness=1, gridcolor="#f0f0f0"),
         margin=dict(t=120), template="plotly_white", hovermode="x unified",
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5)
     )
@@ -355,8 +321,6 @@ def trace_courbes(df, C_bat, puissance_borne_ve, heures_ve, p_centrale_kwc=6.0):
         pio.to_html(fig_flux, full_html=False, config={'displayModeBar': False}),
         pio.to_html(fig_elec, full_html=False, config={'displayModeBar': False})
     )
-
-
 
 def courbe_iv_pv(panneau):
     """
@@ -372,19 +336,13 @@ def courbe_iv_pv(panneau):
         IMP_STC = p.get('IMP', 13.34)
         VOC_STC = p.get('VOC', 43.58)
         ISC_STC = p.get('ISC', 14.31)
-
-        # 2. Modélisation mathématique fidèle
-        # Pour que la courbe passe par (Vmp, Imp), on calcule l'exposant 'n' réel
         # Basé sur la relation : Imp = Isc * (1 - (Vmp/Voc)^n)
         n_ajuste = np.log(1 - (IMP_STC / ISC_STC)) / np.log(VMP_STC / VOC_STC)
-        
         v_vec = np.linspace(0, VOC_STC, 100)
         i_vec = np.maximum(0, ISC_STC * (1 - (v_vec / VOC_STC)**n_ajuste))
         p_vec = v_vec * i_vec
-
         # 3. Création du graphique
         fig = make_subplots(specs=[[{"secondary_y": True}]])
-
         # --- TRACE : COURBE I-V ---
         fig.add_trace(go.Scatter(
             x=v_vec, y=i_vec, 
@@ -400,7 +358,6 @@ def courbe_iv_pv(panneau):
                 "<b>Puissance :</b> %{customdata:.1f} W<extra></extra>"
             )
         ), secondary_y=False)
-        
         # --- TRACE : COURBE P-V ---
         fig.add_trace(go.Scatter(
             x=v_vec, y=p_vec, 
@@ -416,7 +373,6 @@ def courbe_iv_pv(panneau):
                 "<b>Courant :</b> %{customdata:.2f} A<extra></extra>"
             )
         ), secondary_y=True)
-
         # --- POINT PMAX (MPP) ---
         fig.add_trace(go.Scatter(
             x=[VMP_STC], y=[PMAX_STC],
@@ -431,7 +387,6 @@ def courbe_iv_pv(panneau):
                 "Imp : " + str(IMP_STC) + " A<extra></extra>"
             )
         ), secondary_y=True)
-
         # 4. Annotations et Badges
         fig.add_annotation(
             xref="paper", yref="paper", x=0.02, y=0.96,
@@ -439,21 +394,17 @@ def courbe_iv_pv(panneau):
             showarrow=False, bgcolor="#eff6ff", bordercolor="#3b82f6",
             borderpad=6, font=dict(size=11, color="#1e40af")
         )
-
         # 5. Configuration Layout
         fig.update_layout(
-            title=dict(text=f"Caractéristique Réelle : {PMAX_STC}Wc", x=0.5, font=dict(size=18)),
+            title=dict(text=f"Caractéristique réelle du panneau : {PMAX_STC}Wc", x=0.5, font=dict(size=18)),
             template="plotly_white",
             hovermode="x unified",
             xaxis=dict(title="Tension (V)", showspikes=True, spikethickness=1, gridcolor="#f0f0f0"),
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
             margin=dict(l=20, r=20, t=100, b=20)
         )
-
         fig.update_yaxes(title_text="Courant (A)", color="#2563eb", secondary_y=False, range=[0, ISC_STC * 1.1])
         fig.update_yaxes(title_text="Puissance (W)", color="#e11d48", secondary_y=True, range=[0, PMAX_STC * 1.1])
-
         return pio.to_html(fig, full_html=False, config={'displayModeBar': False}), None, None, None
-
     except Exception as e:
         return f"<div style='color:red;'>Erreur : {str(e)}</div>", None, None, None

@@ -5,234 +5,334 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Energix PV Réunion - Recommandation de Centrale Solaire</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}?v=1.1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 	<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon/favicon.ico') }}">
-
-	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/favicon/apple-touch-icon.png') }}">
-
 	<link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon/favicon-32x32.png') }}">
 	<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon/favicon-16x16.png') }}">
-
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='img/favicon/apple-touch-icon.png') }}">
 	<link rel="manifest" href="{{ url_for('static', filename='img/favicon/site.webmanifest') }}">
-    <style>
-        .header-texts { flex-grow: 1; text-align: center; }
-        .header-texts h1 { color: #FFF; font-size: 1.6rem; font-weight: 600; margin: 10px 0 5px 0; }
-        .header-texts h2 { color: #a3daff;  font-size: 1.1rem; font-weight: 400; margin: 0; }
-        .form-group.grayed { opacity: 0.4; pointer-events: none; transition: 0.3s; }
-    </style>
+	<meta name="theme-color" content="#FFD700">
+	<meta name="mobile-web-app-capable" content="yes">
+		<div id="energi-clock-bar">
+			<span id="energi-date"></span>
+			<div id="energi-right">
+				<span id="energi-time"></span>
+				<span id="energi-battery"></span>
+			</div>
+		</div>
 </head>
-<body>
+<body data-intro="{{ intro }}">
+    <div id="intro-video-container">
+		<video id="intro-video" autoplay muted playsinline loop>
+            <source src="static/3D.mp4" type="video/mp4">
+        </video>
+    </div>
     <header>
         <div class="header-container">
-            <img src="{{ url_for('static', filename='img/EnergiX.svg') }}" alt="Logo" id="logo">
             <div class="header-texts">
                 <h1>Recommandation de centrale solaire</h1>
                 <h2>Energix PV Réunion - Expertise Solaire 974</h2>
             </div>
         </div>
     </header>
-
-    <div class="container">
+    <div>
         <form method="POST">
-            <div class="form-group">
-				<details class="EnergiX-info-pad" style="max-width: 500px; margin: 2px auto 20px auto;">
-					<summary style="
-						list-style: none; 
-						cursor: pointer; 
-						padding: 8px 30px; 
-						/* TRANSPARENCE ACCENTUÉE : 0.4 pour un effet verre givré */
-						background: rgba(163, 218, 255, 0.4); 
-						border: 2px solid #00d4ff; 
-						border-radius: 40px; 
-						text-align: center;
-						box-shadow: 0 4px 12px rgba(0, 212, 255, 0.1);
-						transition: all 0.3s ease;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						gap: 10px;
-						backdrop-filter: blur(4px); /* Ajoute un effet de flou pour la lisibilité */
-						-webkit-backdrop-filter: blur(4px);">
-						
-						<span style="color: #002395; font-weight: 800; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; font-family: 'Montserrat', sans-serif;">
-							ℹ️ INFOS
-						</span>
-						<span class="info-arrow" style="color: #002395; font-weight: bold; transition: 0.3s;">▼</span>
+            <div>
+				<details class="EnergiX-info-pad">
+					<summary>
+						<span>INFOS</span>
+						<span class="info-arrow">▼</span>
 					</summary>
-
-					<div class="info-content" style="
-						/* Contenu légèrement plus opaque pour bien lire le texte */
-						background: rgba(255, 255, 255, 0.9);
-						border: 2px solid #00d4ff;
-						border-top: none;
-						padding: 12px 30px;
-						border-radius: 0 0 30px 30px;
-						margin-top: -10px; /* Recouvrement pour unifier les bordures */
-						text-align: center;
-						font-size: 0.8rem;
-						color: #1e293b;
-						box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-						position: relative;
-						z-index: 4;">
-						
-						<p style="margin: 0; line-height: 1.5; font-weight: 500;">
-							Vous pouvez renseigner <strong>soit</strong> le nombre d'habitants, <strong>soit</strong> la consommation mensuelle moyenne.<br>
-							La consommation mensuelle en (kWh) est <strong>recommandée</strong> pour une estimation plus précise.
+					<div class="info-content">
+						<p>
+							Vous pouvez renseigner soit le nombre d'habitants, soit la consommation mensuelle moyenne dans le formulaire ci-dessous.<br>
+							La consommation mensuelle en (kWh) est recommandée pour une estimation plus précise.
 						</p>
+						<a href="https://energix-97441.duckdns.org" target="_blank" class="btn" style="text-decoration: none; padding: 5px 10px 5px 10px; font-size: 0.8rem; display: inline-flex; margin-top: 10px;">
+							<i class="fas fa-user-circle" style="margin-right: 8px;"></i>
+							Portfolio du créateur
+						</a>
 					</div>
 				</details>
-            </div>
-
+			</div>
             <div class="form-row">
                 <div class="form-group half">
-                    <label for="consommation_mensuelle">Consommation (kWh/mois)</label>
-                    <input type="number" id="consommation_mensuelle" name="consommation_mensuelle" list="conso-list" placeholder="Ex: 450">
+                    <label for="consommation_mensuelle">Votre consommation <em style="font-size:0.7rem">kWh/mois</em></label>
+                    <input type="number" id="consommation_mensuelle" name="consommation_mensuelle" list="conso-list" placeholder="Ex : 450">
                     <datalist id="conso-list">
                         {% for c in data.consommation %}<option value="{{ c }}">{% endfor %}
                     </datalist>
                 </div>
                 <div class="form-group half">
-                    <label for="nb_occupants">Nombre d'habitants</label>
-                    <input type="number" id="nb_occupants" name="nb_occupants" list="occupants-list" placeholder="Ex: 4">
+                    <label for="nb_occupants">Nombre d'habitants - <em style="font-size:0.7rem"> à votre foyer</em></label>
+                    <input type="number" id="nb_occupants" name="nb_occupants" list="occupants-list" placeholder="Ex : 4">
                     <datalist id="occupants-list">
                         {% for n in data.occupants %}<option value="{{ n }}">{% endfor %}
                     </datalist>
                 </div>
             </div>
-
             <div class="form-group">
-                <label for="surface">Surface disponible (m²)</label>
-                <input type="number" id="surface" name="surface" required list="surface-list" placeholder="Ex: 20">
+                <label for="surface">Surface disponible <em style="font-size:0.7rem">m²</em></label>
+                <input type="number" id="surface" name="surface" required list="surface-list" placeholder="Ex : 20">
                 <datalist id="surface-list">
                     {% for s in data.surface %}<option value="{{ s }}">{% endfor %}
                 </datalist>
             </div>
-
             <div class="form-group">
-                <label for="budget">Budget disponible (€)</label>
-                <input type="number" id="budget" name="budget" required list="budget-list" placeholder="Ex: 12000">
+                <label for="budget">Votre budget <em style="font-size:0.7rem">€</em></label>
+                <input type="number" id="budget" name="budget" required list="budget-list" placeholder="Ex : 12000">
                 <datalist id="budget-list">
                     {% for b in data.budget %}<option value="{{ b }}">{% endfor %}
                 </datalist>
             </div>
-
             <div class="form-row">
-                <div class="form-group half">
-                    <label for="categorie">Choisissez la catégorie de lieu (optionnel)</label>
-                    <select id="categorie" name="categorie">
-                        <option value="" selected>Tous les lieux</option>
-                        {% for cat in data.lieux.keys() %}
-                        <option value="{{ cat }}">
-                            {% if cat == 'ville' %}
-                                Ville & Lieu-dit
-                            {% else %}
-                                {{ cat|capitalize|replace('_', ' ') }}
-                            {% endif %}
-                        </option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group half">
-                    <label for="zone_ville_cp">Précisez le lieu</label>
-                    <input type="text" id="zone_ville_cp" name="zone_ville_cp" list="zone-list" placeholder="Sélectionnez...">
-                    <datalist id="zone-list"></datalist>
-                </div>
-            </div>
+				<div class="form-group half">
+					<label for="categorie">Choisissez la catégorie de lieu - <em style="font-size:0.7rem">optionnel</em></label>
+					{% set ordre = ["ville", "intercommunalite", "code_postal", "zone"] %}
+					<select id="categorie" name="categorie">
+						<option value="" selected>Tous les lieux</option>
 
-            <button type="submit" style="display: block; margin: 5px auto;">Obtenir la recommandation</button>
+						{% for cat in ordre %}
+							<option value="{{ cat }}">
+								{% if cat == "ville" %}
+									Ville & Lieu-dit
+								{% elif cat == "intercommunalite" %}
+									Intercommunalité
+								{% elif cat == "code_postal" %}
+									Code postal
+								{% elif cat == "zone" %}
+									Zone d’ensoleillement
+								{% endif %}
+							</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="form-group half">
+					<label for="zone_ville_cp">Précisez un lieu - <em style="font-size:0.7rem">de La Réunion</em></label>
+					<input type="text" id="zone_ville_cp" name="zone_ville_cp" list="zone-list" placeholder="Sélectionnez...">
+					<datalist id="zone-list"></datalist>
+				</div>
+			</div>
+            <button type="submit" style="width:100%;" >Obtenir la recommandation</button>
         </form>
     </div>
+			<div class="mix-float-trigger">
+				<span class="arrow-icon">❯</span><br>
+				<span class="mix-label">MIX</span>
+			</div>
+			<div class="mix-float-panel">
+				<div class="mix-card">
+					<h3 class="mix-title">Mix Électrique Réunion</h3>
+					<div class="mix-premium">
+						<span class="value">92.6%</span>
+						<span class="label">Total EnR — Renouvelable</span>
+					</div>
+					<div class="map-container">
+						<div class="map-base"></div>
+						<div class="map-fill"></div>
+					</div>		
+					<div class="mix-legend-row">
+						<div class="mix-item">
+							<span class="dot" style="background:#94a3b8;"></span>
+							<span>Biodiesel</span>
+							<span class="mix-pct">38.0%</span>
+						</div>
+						<div class="mix-item">
+							<span class="dot" style="background:#60a5fa;"></span>
+							<span>Pellets</span>
+							<span class="mix-pct">23.2%</span>
+						</div>
+						<div class="mix-item">
+							<span class="dot" style="background:#3b82f6;"></span>
+							<span>Hydraulique</span>
+							<span class="mix-pct">13.7%</span>
+						</div>
+						<div class="mix-item">
+							<span class="dot" style="background:#fbbf24;"></span>
+							<span>Solaire</span>
+							<span class="mix-pct">10.1%</span>
+						</div>
+						<div class="mix-item">
+							<span class="dot" style="background:#8b5cf6;"></span>
+							<span>Biomasse</span>
+							<span class="mix-pct">6.4%</span>
+						</div>
+						<div class="mix-item">
+							<span class="dot" style="background:#10b981;"></span>
+							<span>Éolien</span>
+							<span class="mix-pct">1.2%</span>
+						</div>
+						<div class="mix-item">
+							<span class="dot" style="background:#000000;"></span>
+							<span>Fossile</span>
+							<span class="mix-pct fossile">7.6%</span>
+						</div>
+					</div>
+					<details class="result-accordion">
+						<summary>
+							<div class="result-accordion-title">Détails des sources & Références </div>
+							<span class="arrow-icon">▼</span>
+						</summary>
+						<div class="info-content">
+							<table class="eco-table">
+								<tr>
+									<th>Origine</th>
+									<th>Part (%)</th>
+								</tr>
+								<tr>
+									<td class="eco-label">
+										<span class="eco-color eco-biodiesel"></span>
+										Biodiesel (Import)
+									</td>
+									<td class="eco-value">38.0 %</td>
+								</tr>
+								<tr>
+									<td class="eco-label">
+										<span class="eco-color eco-pellets"></span>
+										Pellets bois (Import)
+									</td>
+									<td class="eco-value">23.2 %</td>
+								</tr>
+								<tr>
+									<td class="eco-label">
+										<span class="eco-color eco-hydro"></span>
+										Hydraulique (Local)
+									</td>
+									<td class="eco-value">13.7 %</td>
+								</tr>
+								<tr>
+									<td class="eco-label">
+										<span class="eco-color eco-solaire"></span>
+										Solaire (Local)
+									</td>
+									<td class="eco-value">10.1 %</td>
+								</tr>
+								<tr>
+									<td class="eco-label">
+										<span class="eco-color eco-biomasse"></span>
+										Biomasse (Bagasse)
+									</td>
+									<td class="eco-value">6.4 %</td>
+								</tr>
+								<tr>
+									<td class="eco-label">
+										<span class="eco-color eco-eolien"></span>
+										Éolien (Local)
+									</td>
+									<td class="eco-value">1.2 %</td>
+								</tr>
+								<tr class="eco-fossile">
+									<td class="eco-label">
+										<span class="eco-color eco-fossile-color"></span>
+										Fossile (Gazole)
+									</td>
+									<td class="eco-value">7.6 %</td>
+								</tr>
+							</table>
+							<div class="eco-sources">
+								Sources officielles :<br>
+								• Bilan Énergétique – 
+								<a href="https://www.energies-reunion.com/" target="_blank">Observatoire Énergie Réunion (OER)</a><br>
+								• Données temps réel – 
+								<a href="https://www.edf.re/edf-a-la-reunion/notre-systeme-electrique/le-mix-energetique" target="_blank">EDF SEI La Réunion</a>
+							</div>
+						</div>
 
-    <script>
-        const DATA_LIEUX = {{ data.lieux | tojson }};
-        const ALL_LIEUX = [].concat(...Object.values(DATA_LIEUX));
 
-        document.addEventListener('DOMContentLoaded', function () {
-            const conso = document.getElementById('consommation_mensuelle');
-            const nb = document.getElementById('nb_occupants');
-            const catSelect = document.getElementById('categorie');
-            const zoneInput = document.getElementById('zone_ville_cp');
-            const zoneList = document.getElementById('zone-list');
-
-            function toggleInputs() {
-                if (conso.value) {
-                    nb.disabled = true; nb.closest('.form-group').classList.add('grayed');
-                } else if (nb.value) {
-                    conso.disabled = true; conso.closest('.form-group').classList.add('grayed');
-                } else {
-                    nb.disabled = false; conso.disabled = false;
-                    nb.closest('.form-group').classList.remove('grayed');
-                    conso.closest('.form-group').classList.remove('grayed');
-                }
-            }
-            conso.addEventListener('input', toggleInputs);
-            nb.addEventListener('input', toggleInputs);
-
-            catSelect.addEventListener('change', function() {
-                const cat = this.value;
-                zoneList.innerHTML = '';
-                const options = cat ? DATA_LIEUX[cat] : ALL_LIEUX;
-                
-                // Tri alphabétique pour plus de confort
-                const sortedOptions = [...options].sort();
-
-                sortedOptions.forEach(opt => {
-                    const el = document.createElement('option');
-                    el.value = opt;
-                    zoneList.appendChild(el);
-                });
-            });
-
-            catSelect.dispatchEvent(new Event('change'));
-        });
-    </script>
-		<p class="reveal-footer" style="text-align: center; color: #1e293b; font-size: 0.9rem; line-height: 1.6; max-width: 800px; margin: 10px auto 20px auto; padding: 0 10px;">
-			L'outil <strong>Energix PV</strong> analyse votre consommation pour vous proposer la meilleure installation photovoltaïque .<br>
-			Développé par <strong>Energix PV 97441</strong> pour optimiser votre autonomie solaire à La Réunion.
-		</p>
-		<div class="visitor-counter">
-			<div id="stats-badge-pv">
-				<span class="status-dot"></span>
-				<span style="color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.7rem;">Live :</span>
-				<span id="visitor-count-pv">Disponible</span>
+					</details>
+				</div>
+			</div>
+	<section class="app-installer-container">
+		<details class="app-download-section">
+			<summary class="accordion-header">
+				<div class="header-content">
+					<i class="fas fa-download header-icon"></i>
+					<span class="download-title">Installer l'application EnergiX</span>
+				</div>
+				<i class="fas fa-chevron-down accordion-arrow"></i>
+			</summary>
+			<div class="accordion-content">
+    <div class="download-buttons">
+			<a href="/static/telechargements/energix.apk" download="EnergiX_Installer.apk" class="btn-download" id="btn-android">
+				<i class="fab fa-google-play"></i>
+				<span>
+					<small>Disponible sur</small>
+					<strong>Android</strong>
+				</span>
+			</a>
+			<button id="btn-ios" class="btn-download">
+				<i class="fab fa-apple"></i>
+				<span>
+					<small>Disponible sur</small>
+					<strong>iPhone / iPad</strong>
+				</span>
+			</button>
+			<a href="{{ url_for('static', filename='telechargements/EnergiX_PV_Windows.zip') }}" download class="btn-download" id="btn-windows">
+				<i class="fab fa-windows"></i>
+				<span>
+					<small>Installer sur</small>
+					<strong>Windows</strong>
+				</span>
+			</a>
+			<div class="btn-download disabled" id="btn-mac" style="opacity: 0.5; cursor: not-allowed; filter: grayscale(1);">
+				<i class="fas fa-desktop"></i>
+				<span>
+					<small>Bientôt sur</small>
+					<strong>macOS</strong>
+				</span>
+			</div>
+			<div class="btn-download disabled" id="btn-linux" style="opacity: 0.5; cursor: not-allowed; filter: grayscale(1);">
+				<i class="fab fa-linux"></i>
+				<span>
+					<small>Bientôt sur</small>
+					<strong>Linux</strong>
+				</span>
 			</div>
 		</div>
-	<footer style="margin-top: 10px; padding: 10px; text-align: center; border-top: 1px solid #eee;">
-        
-		<div style="text-align: center; padding: 10px; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #000000;">
-			<p style="margin: 0;">
-				© 2026 <span style="color: #002395; font-weight: 800;">Energi</span><span style="color: #ff4d00; font-weight: 800;">X_97441</span>. 
+		<p class="pwa-hint">Accédez à EnergiX en un clic depuis votre écran d'accueil</p>
+	</div>
+		</details>
+		<details class="reveal-footer">
+			<summary>À propos d’EnergiX PV </summary>
+
+			<div class="reveal-footer-content">
+				L'outil <strong>Energix PV</strong> analyse votre consommation pour vous proposer 
+				la meilleure installation photovoltaïque.<br>
+				Développé par <strong>Energix PV 97441</strong> pour optimiser votre autonomie solaire à La Réunion.
+			</div>
+		</details>
+	</section>
+	<div class="visitor-counter">
+		<div id="stats-badge-pv" style="display: flex; flex-direction: column; align-items: center; gap: 2px;">
+			<div style="display: flex; align-items: center; letter-spacing: 0.6px; gap: 8px;">
+				<span class="status-dot"></span>
+				<span>
+					LIVE : <span id="visitor-count-pv" style="color: inherit;">Disponible</span>
+				</span>
+			</div>
+			<span id="visitor-text-pv" style="letter-spacing: 0.9px; font-size: 0.8rem; ; opacity: 0.8;">
+				  Initialisation ...
+			</span>
+		</div>
+	</div>
+	<footer>
+		<div class="footer-inner">
+			<p class="footer-brand">
+				© 2026 
+				<span class="blue">Energi</span><span class="green">X</span><span class="blue">_97441</span> 
 				Tous droits réservés.
 			</p>
-			
-			<div style="width: 120px; height: 2px; background: #F0C300; margin: 12px auto; border-radius: 2px; box-shadow: 0 1px 3px rgba(255, 77, 0, 0.3);"></div>
-			
-			<p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; font-weight: 600;">
+			<div class="footer-divider"></div>
+			<p class="footer-baseline">
 				L'expertise solaire locale
 			</p>
 		</div>
-    </footer>
-	<script data-goatcounter="https://energix-pv.goatcounter.com/count" 
-			async src="//gc.zgo.at/count.js"></script>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			setTimeout(() => {
-				fetch('https://energix-pv.goatcounter.com/counter/total.json')
-					.then(response => response.json())
-					.then(data => {
-						const badge = document.getElementById('visitor-count-pv');
-						if (badge) {
-							badge.innerText = "Disponible"; 
-							// Style réduit pour plus de finesse
-							badge.style.fontSize = "0.6rem";
-							badge.style.letterSpacing = "0.5px";
-							badge.style.fontWeight = "600";
-							badge.style.textTransform = "uppercase";
-						}
-					})
-					.catch(err => console.log("Stats PV en attente"));
-			}, 1000);
-		});
+		<img src="{{ url_for('static', filename='img/EnergiX.svg') }}" alt="Logo" id="logo">
+	</footer>
+	<script data-goatcounter="https://energix-pv.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+	<script id="data-lieux" type="application/json">
+		{{ data.lieux | tojson }}
 	</script>
+	<script src="{{ url_for('static', filename='java.js') }}"></script>
 </body>
 </html>

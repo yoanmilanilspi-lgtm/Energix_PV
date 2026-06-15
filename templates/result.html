@@ -11,54 +11,52 @@
 	<link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon/favicon-16x16.png') }}">
 	<link rel="manifest" href="{{ url_for('static', filename='img/favicon/site.webmanifest') }}">
 </head>
-<body>
+<body id="page-recommandation" data-intro="False">
+<div id="intro-video-container">
+	<video id="intro-video" autoplay muted playsinline loop>
+        <source src="static/3D.mp4" type="video/mp4">
+    </video>
+</div>
 <div class="report-remote-container">
     <div class="report-remote-tab">
         <div class="remote-trigger">
-            <span class="arrow-icon">❯</span>
+            <span class="arrow-icon">❮</span>
             <div class="trigger-label">MENU</div>
         </div>
-        
         <div class="remote-content">
-            <div class="remote-header">📋 SOMMAIRE RÉCAPITULATIF</div>
-            
-            <nav class="remote-nav">
-				<a href="#trigger-zone" style="border-left: 3px solid #ff4d00; margin-bottom: 2px;">📍 Secteurs & Zone</a>
-				<a href="#recommandation-principale" style="border-left: 3px solid #0047AB; margin-bottom: 2px;">✨ Votre Recommandation</a> 
-				<a href="#aides-financieres" class="sub-link" style="padding-left: 30px; font-size: 0.85em; opacity: 0.9;">💰 Aides & Avantages</a>
-				<a href="#tailles-centrales" class="sub-link" style="padding-left: 30px; font-size: 0.85em; opacity: 0.9;">📊 Comparatif Tailles</a>
-				<a href="#consommations-types" class="sub-link" style="padding-left: 30px; font-size: 0.85em; opacity: 0.9;">🏠 Foyers Réunionnais</a>
-				
-				<div class="remote-divider" style="background: #f0f7ff; color: #0047AB; font-size: 0.7rem; font-weight: 800; padding: 10px 15px; text-transform: uppercase; letter-spacing: 1px; margin: 15px 0 10px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
-					Navigation Expert
-				</div>
-				
-				<a href="/" class="action-link" style="color: #334155;">🏠 Accueil</a>
-				
+			<nav class="remote-nav">
+			<div class="remote-divider" style="background: #f0f7ff; color: #0047AB; font-size: 0.7rem; font-weight: 800; padding: 10px 15px; text-transform: uppercase; letter-spacing: 1px; margin: 15px 0 10px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+				Navigation Expert
+			</div>
+				<a href="/" class="action-link">🏠 Accueil</a>
 				<a href="{{ url_for('show_conso_prod',
 						surface=surface, budget=budget, nb_occupants=nb_occupants,
 						consommation_estimee=consommation_estimee, recommendation=recommendation,
 						production_estimee=production_estimee, capacite_batterie=capacite_batterie,
 						lieu=lieu, zone=zone, intercommunalite=intercommunalite,
-						puissance_centrale=puissance_centrale) }}" class="action-link" style="color: #0047AB; font-weight: 600;">
-					📉 Conso & Production
+						puissance_centrale=puissance_centrale) }}" class="action-link">
+					📊 Conso & Production
 				</a>
-				
-				<a href="{{ url_for('show_graph', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}" class="action-link" style="color: #ff4d00; font-weight: 600;">
+				<a href="{{ url_for('show_graph', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}" class="action-link">
 					📈 Résultats Estimés
 				</a>
-				
-				<a href="{{ url_for('dashboard', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, capacite_batterie=capacite_batterie, lieu=lieu, zone=zone, intercommunalite=intercommunalite, inclinaison=inclinaison, orientation=orientation, nb_panneaux=nb_panneaux) }}" 
-				   class="action-link dashboard-btn-nav">
-					📊 Tableau de Bord
+				<a class="action-link" href="{{ url_for('dashboard') }}">
+					📕 Tableau de Bord
 				</a>
+				<div class="remote-divider" style="background: #f0f7ff; color: #0047AB; font-size: 0.7rem; font-weight: 800; padding: 10px 15px; text-transform: uppercase; letter-spacing: 1px; margin: 15px 0 10px 0; border-top: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+					SOMMAIRE
+				</div>
+				<a href="#trigger-zone">📍 Secteurs & Zone</a>
+				<a href="#recommandation-principale">✨ Votre Recommandation</a> 
+				<a href="#aides-financieres">💰 Aides & Avantages</a>
+				<a href="#tailles-centrales">📊 Comparatif Tailles</a>
+				<a href="#consommations-types">🏠 Foyers Réunionnais</a>
 			</nav>
         </div>
     </div>
 </div>
 	<header>
         <div class="header-container">
-            <img src="{{ url_for('static', filename='img/EnergiX.svg') }}" alt="Logo"  id="logo">
             <div class="header-texts">
 				<div style="justify-content: center; align-items: center;">
 					<h1>Recommandation pour votre installation solaire</h1>
@@ -67,257 +65,222 @@
             </div>
         </div>
     </header>
-	<style>
-        /* --- STYLE ENTÊTE (D'ORIGINE) --- */
-        .header-texts { flex-grow: 1; text-align: center; }
-        .header-texts h1 { color: #FFF; font-size: 1.6rem; font-weight: 600; margin: 10px 0 5px 0; }
-        .header-texts h2 { color: #a3daff;  font-size: 1.1rem; font-weight: 400; margin: 0; }
-        .form-group.grayed { opacity: 0.4; pointer-events: none; transition: 0.3s; }
-
-        /* --- ANIMATION CHALEUR MAGMA --- */
-		@keyframes chaleur-magma {
-			0% { border-left-color: #ff4d00; box-shadow: 2px 0 5px rgba(255, 77, 0, 0.3); }
-			50% { border-left-color: #ff0000; box-shadow: 5px 0 15px rgba(255, 0, 0, 0.6); }
-			100% { border-left-color: #ff4d00; box-shadow: 2px 0 5px rgba(255, 77, 0, 0.3); }
-		}
-		#collapsible-band {
-			animation: chaleur-magma 3s infinite ease-in-out;
-		}
-	</style>
-
+	<form method="POST">
     <main>		
-		<div class="result" style="font-size:0.9em; line-height:1.4; text-align:justify; margin-bottom:20px; padding: 10px 30px; width: 90%;">
-		<h2 style="margin-bottom:10px; color: #0047AB; border-left: 5px solid #ff4d00; padding-left: 15px;">Vos Recommandations Personnalisées</h2>
+		<div>
+		<div style="text-align:center;margin-top:0px;margin-bottom:10px;text-transform:uppercase;font-size:0.8rem;">Vos recommandations personnalisées</div>
 		
-		<div style="margin-bottom: 20px; position: relative; z-index: 999; font-family: 'Segoe UI', Arial, sans-serif;">
-			<div id="trigger-zone" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background: #FFFFFF; border: 1px solid #ff4d00; border-radius: 12px 12px 0 0; user-select: none; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);">
-				<strong style="font-size: 14px; color: #7f1d1d; letter-spacing: 0.3px;">
-					📍 Secteurs couverts par cette étude :
-				</strong>
-				<span id="state-arrow" style="transition: transform 0.3s; font-size: 12px; color: #ff0000; font-weight: bold;">▼</span>
+		<div class="energiX-collapse open" id="secteurs-collapse">
+			<div class="energiX-collapse-header">
+				Secteurs couverts par cette étude
+				<span class="energiX-collapse-arrow">▼</span>
 			</div>
-
-			<div id="collapsible-band" style="max-height: 50px; opacity: 1; overflow: hidden; transition: all 0.4s ease; background: linear-gradient(90deg, #0047AB 0%, #002366 50%, #450a0a 100%); color: #ffffff; border-radius: 0 0 12px 12px; border-left: 5px solid #ff4d00; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
-				<div style="padding: 12px; white-space: nowrap; font-weight: bold; letter-spacing: 1px; font-family: 'Montserrat', sans-serif;">
+			<div class="energiX-collapse-content">
+				<div class="energiX-collapse-inner">
 					<marquee behavior="scroll" direction="left" scrollamount="6">
-						 {{ lieu }} • {{ lieu }} • {{ lieu }} — EXPERTISE SOLAIRE RÉUNIONNAISE — <strong>EnergiX PV Réunion</strong>
+						{{ lieu }} • {{ lieu }} • {{ lieu }} — EXPERTISE SOLAIRE RÉUNIONNAISE — EnergiX PV Réunion
 					</marquee>
 				</div>
 			</div>
 		</div>
 
-		<div style="margin-bottom: 20px; font-family: 'Segoe UI', Arial, sans-serif;">
-			<details style="background: #FFFFFF; border-radius: 12px; cursor: pointer; border: 1px solid #ff4d00; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden;">
-				<summary style="padding: 12px 15px; font-weight: bold; color: #7f1d1d; outline: none; list-style: none; display: flex; justify-content: space-between; align-items: center; user-select: none;">
-					<span>🔍 Voir la liste complète des secteurs inclus</span>
-					<span style="color: #ff0000; font-size: 12px;">▼</span>
-				</summary>
-				<div style="padding: 15px; border-top: 1px solid #FDE68A; background: #FFFBEB; font-size: 0.9em; color: #4B5563; line-height: 1.6;">
-					<div style="column-count: 2; column-gap: 20px;">
-						<span style="color: #ff0000; font-weight: bold;">•</span> 
-						{{ lieu.replace(' • ', ' <br><span style="color: #ff0000; font-weight: bold;">•</span> ') | safe }}
-					</div>
-				</div>
-			</details>
-		</div>
-
-		<div style="background: #FFFFFF; padding: 15px; border-radius: 12px; border: 1px solid #0047AB; box-shadow: 0 2px 10px rgba(0, 71, 171, 0.1); font-family: 'Segoe UI', Arial, sans-serif; display: flex; justify-content: space-between; align-items: center;">
-		    <div>
-                <div style="margin-bottom: 8px; color: #1e293b;"> 
-                    <span style="font-weight: bold; color: #0047AB;">☀️ Zone d'ensoleillement :</span> 
-                    <span style="margin-left: 5px; font-weight: 600;">{{ zone }}</span> 
-                </div>
-                <div style="color: #1e293b;">
-                    <span style="font-weight: bold; color: #0047AB;">🏢 Intercommunalité référente :</span> 
-                    <span style="margin-left: 5px; font-weight: 600;">{{ intercommunalite }}</span>
-                </div>
-            </div>
-            <img src="{{ url_for('static', filename='img/la_reunion.png') }}" width="35" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" alt="Réunion" />
-		</div>
-		          
-        <div class="result-wrapper" style="margin: 20px auto; width: 100%; max-width: 1000px;"> 
-            <details open style="background: #FFFFFF; border-radius: 18px; border: 1px solid #0047AB; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 71, 171, 0.05);">
-                <summary style="padding: 12px 25px; background: #f0f7ff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; list-style: none;">
-                    <span style="font-weight: 800; color: #0047AB; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px;">✨ Détails de votre étude technique</span>
-                    <span class="arrow-icon" style="color: #0047AB;">▼</span>
-                </summary>
-                <div id="recommandation-principale" style="padding: 20px; background: #FFFFFF; width: 100%;"> 
-                    {{ recommendation|safe }}
-                </div>
-            </details>
-        </div>
-			
-		<div class="recommandation-reunion" style="margin-top: 20px; font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #FFF9E6 0%, #FFEDD5 100%); padding: 25px; border-radius: 15px; color: #4A3728; border: 1px solid #ff4d00; box-shadow: 0 4px 15px rgba(255, 77, 0, 0.1);">
-			<h3 style="border-bottom: 3px solid #ff4d00; padding-bottom: 10px; color: #7f1d1d; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 0;">Expertise Solaire Réunionnaise</h3>
-			
-			<div style="background: rgba(255, 255, 255, 0.6); padding: 18px; border-radius: 10px; border: 1px solid #FEF3C7; margin-bottom: 15px; backdrop-filter: blur(5px);">
-				<p style="margin: 5px 0; font-size: 1.05em;">📏 <b>Surface identifiée :</b> <span style="color: #ff0000; font-weight: bold;">{{ surface }} m²</span></p>
-				<p style="margin: 5px 0; font-size: 1.05em;">📐 <b>Inclinaison :</b> <span style="color: #0047AB; font-weight: bold;">22°</span> | 🧭 <b>Orientation :</b> <span style="color: #0047AB; font-weight: bold;">Nord (0°)</span></p>
-			</div>
-			
-			<details style="background: #FFFFFF; border: 1px solid #0047AB; border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 12px rgba(0, 71, 171, 0.08); overflow: hidden;">
-				<summary style="padding: 15px; font-weight: bold; color: #0047AB; outline: none; display: flex; justify-content: space-between; align-items: center; list-style: none; background: #f0f7ff;">
-					<span id="aides-financieres" style="display: flex; align-items: center; gap: 10px; font-size: 1.05em;">💰 Aides financières & Avantages</span>
-					<span style="color: #ff4d00; transition: 0.3s;">▼</span>
-				</summary>
-				
-				<div style="padding: 20px; border-top: 1px solid #e2e8f0; font-size: 0.95em; line-height: 1.6; color: #1e293b;">
-					<p style="margin-bottom: 10px;">• <b style="color: #0047AB;">KAP Photovoltaïque :</b> jusqu'à <span style="color: #ff4d00; font-weight: 800;">6000 €</span> d'aide régionale.</p>
-					<p style="margin-bottom: 10px;">• <b style="color: #0047AB;">Prime EDF :</b> jusqu'à <span style="color: #ff4d00; font-weight: 800;">8490 €</span> (basé sur 8 kWc).</p>
-					<p style="margin-bottom: 10px;">• <b style="color: #0047AB;">Autoconsommation :</b> revente du surplus ou stockage batterie.</p>
-					<p style="margin-bottom: 15px;">• <b style="color: #0047AB;">Monitoring :</b> suivi en temps réel via votre application mobile.</p>
-					
-					<div style="color: #0047AB; background: #FFF9E6; padding: 15px; border-radius: 8px; border-left: 5px solid #F0C300; margin-top: 10px; font-size: 0.92em; box-shadow: inset 0 0 10px rgba(240, 195, 0, 0.1);">
-						<strong style="display: block; margin-bottom: 5px;">💡 Conseil d'expert :</strong> 
-						Optimisez votre rentabilité en programmant vos appareils énergivores (chauffe-eau, piscine, clim) entre <span style="font-weight: bold;">10h et 15h</span>.
-					</div>
-				</div>
-			</details>
-
-			<details style="background: #FFFFFF; border: 1px solid #FDE68A; border-radius: 8px; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
-					<summary style="padding: 12px; font-weight: bold; color: #92400E; outline: none; display: flex; justify-content: space-between; align-items: center;">
-						<span id="tailles-centrales" style="display: flex; align-items: center; gap: 8px;">📊 Production selon la taille de centrale</span>
-						<span style="color: #F0C300;">▼</span>
+				<details class="result-accordion" id="trigger-zone" >
+					<summary>
+						<span class="result-accordion-title">Secteurs, Zone & Intercommunalité</span>
+						<span class="arrow-icon">▼</span>
 					</summary>
-					<div style="padding: 15px; border-top: 1px solid #FEF3C7; font-size: 0.95em;">
-						<table style="width: 100%; border-collapse: collapse; color: #4B5563;">
-							<tr style="border-bottom: 1px solid #FFF7ED;">
-								<td style="padding: 8px;"><b>3 kWc</b> (15 m²)</td>
-								<td style="text-align: right; color: #D97706; font-weight: bold;">4500 – 5500 kWh/an</td>
-							</tr>
-							<tr style="border-bottom: 1px solid #FFF7ED;">
-								<td style="padding: 8px;"><b>6 kWc</b> (30 m²)</td>
-								<td style="text-align: right; color: #D97706; font-weight: bold;">9000 – 11000 kWh/an</td>
-							</tr>
-							<tr style="border-bottom: 1px solid #FFF7ED;">
-								<td style="padding: 8px;"><b>9 kWc</b> (45 m²)</td>
-								<td style="text-align: right; color: #D97706; font-weight: bold;">13500 – 16500 kWh/an</td>
-							</tr>
-							<tr style="border-bottom: 1px solid #FFF7ED;">
-								<td style="padding: 8px;"><b>12 kWc</b> (60 m²)</td>
-								<td style="text-align: right; color: #D97706; font-weight: bold;">18000 – 22000 kWh/an</td>
-							</tr>
-							<tr>
-								<td style="padding: 8px;"><b>15 kWc</b> (75 m²)</td>
-								<td style="text-align: right; color: #D97706; font-weight: bold;">22500 – 27500 kWh/an</td>
-							</tr>
-						</table>
+					<div class="result-content">
+						<div class="bilan-line">
+							<div style= "text-align :left;"><strong>🔍 Voir la liste complète des secteurs inclus :</strong></div><br>
+							{{ lieu.replace(' • ', ' <br>• ') | safe }}
+						</div>
+						<hr style="border:none; border-top:1px solid #eee; margin:15px 0;">
+						<div class="info-card-container">
+							{% if refs.zone %}
+							<div class="info-card-white">
+								<a href="{{ refs.zone.url }}" target="_blank"></a>
+								<strong>☀️ Zone d’ensoleillement</strong><br>
+								<span><em style="font-size:0.7rem">{{ refs.zone.label }}</em></span>
+							</div>
+							{% endif %}
+
+							{% if refs.intercommunalite %}
+							<div class="info-card-white">
+								<strong>🏢 Intercommunalité référente</strong><br>
+								<a href="{{ refs.intercommunalite.url }}" target="_blank"></a>
+								<span><em style="font-size:0.7rem">{{ refs.intercommunalite.label }}</em></span>
+							</div>
+							{% endif %}
+
+							{% if refs.ile %}
+							<div class="info-card-white">
+								<img src="{{ url_for('static', filename='img/la_reunion.png') }}" width="30"><br>
+								<a href="{{ refs.ile.url }}" target="_blank"></a>
+								<span>{{ refs.ile.label }}</span>
+							</div>
+							{% endif %}
+						</div>
+
 					</div>
 				</details>
+        <div class="result-wrapper">
+			<details id="recommandation-principale" class="result-accordion" open>
+				<summary>
+					<span class="result-accordion-title">✨ Détails de votre étude technique</span>
+					<span class="arrow-icon">▼</span>
+				</summary>
+				<div  class="result-content">
+					{{ recommendation|safe }}
+				</div>
+			</details>
 		</div>
-			
-		<div id="consommations-types" style="margin-top:30px; font-size:0.9em; text-align:center;">
-			<h3 style="margin-bottom:15px; color: #0047AB;">Consommation moyenne à La Réunion (EDF)</h3>
-			<table style="width:100%; border-collapse:collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-				<thead style="background: #0047AB; color: white;">
-					<tr>
-						<th style="padding:12px; border:1px solid #eee;">Type de logement</th>
-						<th style="padding:12px; border:1px solid #eee;">kWh / mois</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-							<td style="padding:10px; border:1px solid #ccc;">Studio / 1 personne</td>
-							<td style="padding:10px; border:1px solid #ccc;">120 – 300</td>
+		<div class="recommandation-reunion">
+			<h3>Expertise Solaire Réunionnaise</h3>
+			<div class="reunion-subcard">
+				<p>📏 Surface identifiée : <span style="color:#ff0000;">{{ surface }} <em style="font-size:0.7rem">m²</em></span></p>
+				<p>📐 Inclinaison : <span style="color:#0047AB;left:10px;">22°</span> |
+				   🧭 Orientation : <span style="color:#0047AB;right:10px;">Nord (0°)</span></p>
+			</div>
+			<details class="result-accordion" id="aides-financieres">
+				<summary>
+					<div class="result-accordion-title">💰 Aides financières & Avantages</div>
+					<span class="arrow-icon">▼</span>
+				</summary>
+				<div class="result-accordion-content">
+					<div><em style="font-size:0.7rem"><b style="color:#0047AB;">KAP Photovoltaïque :</b> 
+						jusqu'à <span>6000 €</span>.</em>
+					</div><br>
+					<div><em style="font-size:0.7rem"><b style="color:#0047AB;">Prime EDF :</b> 
+						jusqu'à <span>8490 €</span>.</em>
+					</div><br>
+					<div><em style="font-size:0.7rem"><b style="color:#0047AB;">Autoconsommation :</b> 
+						revente du surplus ou stockage.</em>
+					</div><br>
+					<div><em style="font-size:0.7rem"><b style="color:#0047AB;">Monitoring :</b> 
+						suivi en temps réel.</em>
+					</div><br>
+					<div class="reunion-expert-box">
+						<div>💡 Conseil d'expert</div>
+						<p><em style="font-size:0.7rem">Optimisez votre rentabilité en programmant vos appareils énergivores 
+						(chauffe-eau, piscine, clim) entre <b>10h et 15h</b>.</em></p>
+					</div>
+				</div>
+
+			</details>
+			<details class="result-accordion" id="tailles-centrales">
+				<summary>
+					<div class="result-accordion-title">📊 Production selon la taille de centrale</div>
+					<span class="arrow-icon">▼</span>
+				</summary>
+
+				<div class="reunion-subcard">
+					<table class="pv-table">
+						<tr class="{{ 'selected' if p_centrale == 3 else '' }}">
+							<td>3 kWc <em style="font-size:0.7rem">- 15 m²</em></td>
+							<td>4500 – 5500 <em style="font-size:0.7rem">kWh/an</em></td>
 						</tr>
 
-						<tr>
-							<td style="padding:10px; border:1px solid #ccc;">Famille de 4 personnes</td>
-							<td style="padding:10px; border:1px solid #ccc;">350 – 550</td>
+						<tr class="{{ 'selected' if p_centrale == 6 else '' }}">
+							<td>6 kWc  <em style="font-size:0.7rem">- 30 m²</em></td>
+							<td>9000 – 11000 <em style="font-size:0.7rem">kWh/an</em></td>
 						</tr>
 
-						<tr>
-							<td style="padding:10px; border:1px solid #ccc;">Maison climatisée</td>
-							<td style="padding:10px; border:1px solid #ccc;">600 – 900</td>
+						<tr class="{{ 'selected' if p_centrale == 9 else '' }}">
+							<td>9 kWc <em style="font-size:0.7rem">- 45 m²</em></td>
+							<td>13500 – 16500 <em style="font-size:0.7rem">kWh/an</em></td>
 						</tr>
 
-						<tr>
-							<td style="padding:10px; border:1px solid #ccc;">Maison + piscine</td>
-							<td style="padding:10px; border:1px solid #ccc;">800 – 1200</td>
+						<tr class="{{ 'selected' if p_centrale == 12 else '' }}">
+							<td>12 kWc  <em style="font-size:0.7rem">- 60 m²</em></td>
+							<td>18000 – 22000 <em style="font-size:0.7rem">kWh/an</em></td>
 						</tr>
 
-						<tr>
-							<td style="padding:10px; border:1px solid #ccc;">Infrastructure & entreprise</td>
-							<td style="padding:10px; border:1px solid #ccc;">1500 – 2000</td>
-					</tr>
-				</tbody>
-			</table>
-			<p style="font-size:0.85em; color:#000; margin-top:8px;">
-					Source : Estimations basées sur les données moyennes de consommation des foyers à La Réunion (EDF Réunion).
-			</p>
+						<tr class="{{ 'selected' if p_centrale == 15 else '' }}">
+							<td>15 kWc  <em style="font-size:0.7rem">- 75 m²</em></td>
+							<td>22500 – 27500 <em style="font-size:0.7rem">kWh/an</em></td>
+						</tr>
+
+						<tr class="{{ 'selected' if p_centrale == 18 else '' }}">
+							<td>18 kWc  <em style="font-size:0.7rem">- 90 m²</em></td>
+							<td>27000 – 33000 <em style="font-size:0.7rem">kWh/an</em></td>
+						</tr>
+					</table>
+
+				</div>
+			</details>
 		</div>
+		<details class="EnergiX-conso-table" id="consommations-types" >
+			<summary>
+				Consommation moyenne à La Réunion (EDF)
+			</summary>
+			<div class="info-content">
+				<table>
+					<thead>
+						<tr>
+							<th>Type de logement</th>
+							<th>kWh / mois</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr><td>Studio - 1 personne</td><td>120 – 300</td></tr>
+						<tr><td>Famille de 4 personnes</td><td>350 – 550</td></tr>
+						<tr><td>Maison climatisée</td><td>600 – 900</td></tr>
+						<tr><td>Maison + piscine</td><td>800 – 1200</td></tr>
+						<tr><td>Infrastructure & entreprise</td><td>1500 – 2000</td></tr>
+						<tr><td>Petite industrie - Atelier</td><td>2500 – 4000</td></tr>
+						<tr><td>Centre commercial - Bureaux</td><td>5000 – 8000</td></tr>
+						<tr><td>Site industriel majeur</td><td>10000 – 15000</td></tr>
+						<tr><td>Data Center - Infrastructure critique</td><td>20000+</td></tr>
+
+						<tr>
+							<td colspan="2"><p>
+								Sources : Moyennes annuelles observées par la CRE (Commission de Régulation de l'Énergie) & les fournisseurs d'énergie.<br>
+								Estimations basées sur les données moyennes de consommation des foyers à La Réunion (EDF Réunion).</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</details>			
         </div>
-
-        <div class="button-group" style="text-align:center; margin:40px 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;">
-		
-			<a class="back-button" 
-			   style="background: #121212; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); transition: 0.3s;"
-			   href="{{ url_for('index') }}">
+	
+        <div class="button-group">
+			<a class="back-button"href="{{ url_for('index') }}">
 				🏠 Accueil
 			</a>
-    
-			<a class="recommendation-button" 
-			   style="background: #0047AB; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(0, 71, 171, 0.3); transition: 0.3s;"
-			   href="{{ url_for('show_conso_prod', surface=surface, budget=budget, consommation_estimee=consommation_estimee, nb_occupants=nb_occupants, production_estimee=production_estimee, puissance_centrale=puissance_centrale|default(6), lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}">
-				📉 Conso & Production
-			</a>
-			
-			<a class="back-button" 
-			   style="background: #ff4d00; color: white; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(255, 77, 0, 0.3); transition: 0.3s;"
-			   href="{{ url_for('show_graph', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}">
+			<a class="recommendation-button" href="{{ url_for('show_conso_prod', surface=surface, budget=budget, consommation_estimee=consommation_estimee, nb_occupants=nb_occupants, production_estimee=production_estimee, puissance_centrale=puissance_centrale|default(6), lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}">
+				📊 Conso & Production
+			</a>		
+			<a class="back-button" href="{{ url_for('show_graph', surface=surface, budget=budget, nb_occupants=nb_occupants, consommation_estimee=consommation_estimee, recommendation=recommendation, production_estimee=production_estimee, puissance_centrale=puissance_centrale, lieu=lieu, zone=zone, intercommunalite=intercommunalite) }}">
 				📈 Résultats estimés
-			</a>
-			
+			</a>	
 			<a class="dashboard-button" href="{{ url_for('dashboard') }}">
-				Tableau de bord
+				📕 Tableau de bord
 			</a>
-		
 		</div>
-
-<style>
-    /* Petit correctif pour l'interaction mobile et survol */
-    .button-group a:hover {
-        transform: translateY(-3px);
-        filter: brightness(1.1);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-    }
-    .button-group a:active {
-        transform: translateY(0);
-    }
-</style>
+	</form>
     </main>
-
-    <script>
-    (function() {
-        const trigger = document.getElementById('trigger-zone');
-        const band = document.getElementById('collapsible-band');
-        const arrow = document.getElementById('state-arrow');
-
-        if (trigger && band) {
-            trigger.onclick = function() {
-                const isClosed = band.style.maxHeight === "0px";
-                band.style.maxHeight = isClosed ? "50px" : "0px";
-                band.style.opacity = isClosed ? "1" : "0";
-                band.style.marginTop = isClosed ? "5px" : "0px";
-                if(arrow) arrow.style.transform = isClosed ? "rotate(0deg)" : "rotate(-90deg)";
-            };
-        }
-    })();
-    </script>
-	<footer style="margin-top: 10px; padding: 10px; text-align: center; border-top: 1px solid #eee;">
-        
-		<div style="text-align: center; padding: 10px; font-family: 'Segoe UI', sans-serif; font-size: 0.85rem; color: #000000;">
-			<p style="margin: 0;">
-				© 2026 <span style="color: #002395; font-weight: 800;">Energi</span><span style="color: #ff4d00; font-weight: 800;">X_97441</span>. 
+		<div class="template-nav">
+			<div class="left-hover-zone"></div>
+			<div class="right-hover-zone"></div>
+			<div class="side-nav-arrow left-arrow">❮</div>
+			<div class="side-nav-arrow right-arrow">❯</div>
+		</div>
+	<footer>
+		<div class="footer-inner">
+			<p class="footer-brand">
+				© 2026 
+				<span class="blue">Energi</span><span class="green">X</span><span class="blue">_97441</span> 
 				Tous droits réservés.
 			</p>
-			
-			<div style="width: 120px; height: 2px; background: #F0C300; margin: 12px auto; border-radius: 2px; box-shadow: 0 1px 3px rgba(255, 77, 0, 0.3);"></div>
-			
-			<p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: #94a3b8; font-weight: 600;">
+			<div class="footer-divider"></div>
+			<p class="footer-baseline">
 				L'expertise solaire locale
 			</p>
 		</div>
-    </footer>
+		<img src="{{ url_for('static', filename='img/EnergiX.svg') }}" alt="Logo" id="logo">
+	</footer>
+	<script src="{{ url_for('static', filename='java.js') }}" defer></script>
+	<script src="{{ url_for('static', filename='navigation.js') }}"></script>
 </body>
 </html>
